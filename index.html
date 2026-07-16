@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code i agenci - poradnik Netim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#12224F; --teal:#12B79B; --teal-br:#1FD6B6;
+    --mint:#E4F7F1; --mint2:#F2FBF8; --grey:#7C818C; --ink:#222222;
+    --bg:#FBFCFD; --surface:#FFFFFF; --line:#E5E8EE; --line-soft:#EEF1F5;
+    --ease:cubic-bezier(0.22,1,0.36,1); --r:14px;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--bg); color:var(--ink); font-family:"Calibri","Carlito",system-ui,sans-serif; font-size:16.5px; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  .wrap{ max-width:1060px; margin:0 auto; padding:0 28px; }
+  .mono{ font-family:"JetBrains Mono",monospace; }
+  h1,h2,h3,h4,h5{ color:var(--navy); font-weight:700; letter-spacing:-.01em; }
+  a{ color:var(--teal); }
+  .reveal{ animation:rise .5s var(--ease) both; }
+  @keyframes rise{ from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+  .topbar{ border-bottom:1px solid var(--line); background:var(--surface); }
+  .topbar .wrap{ display:flex; align-items:center; justify-content:space-between; padding:18px 28px; }
+  .topbar img{ height:26px; }
+  .topbar .meta{ font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--grey); }
+
+  header{ padding:13vh 0 10vh; border-bottom:1px solid var(--line); }
+  .eyebrow{ font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.04em; color:var(--teal); text-transform:uppercase; display:inline-flex; gap:8px; background:var(--mint); padding:6px 13px; border-radius:999px; }
+  h1{ font-size:clamp(2.4rem,6vw,4.4rem); line-height:1.03; letter-spacing:-.03em; margin:.5em 0 .35em; max-width:17ch; }
+  h1 .hl{ color:var(--teal); }
+  .lede{ font-size:clamp(1.05rem,1.6vw,1.25rem); color:var(--ink); max-width:52ch; }
+  .toc{ display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; }
+  .toc a{ font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none; color:var(--navy); background:var(--surface); border:1px solid var(--line); padding:7px 13px; border-radius:999px; }
+  .toc a:hover{ border-color:var(--teal); color:var(--teal); }
+
+  section{ padding:9vh 0; border-bottom:1px solid var(--line); }
+  .sec-no{ font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--teal); text-transform:uppercase; letter-spacing:.03em; }
+  .sec-title{ font-size:clamp(1.6rem,3.2vw,2.4rem); line-height:1.12; margin:.35em 0 .45em; max-width:26ch; }
+  .sec-intro{ color:var(--ink); max-width:60ch; font-size:1.05rem; }
+  .sec-head{ margin-bottom:4vh; }
+  p.blk{ max-width:64ch; margin:14px 0; color:var(--ink); }
+  p.blk strong{ color:var(--navy); }
+
+  /* tricks */
+  .tricks{ display:grid; grid-template-columns:1fr; gap:20px; }
+  @media(min-width:900px){ .tricks{ grid-template-columns:1fr 1fr 1fr; align-items:start; } }
+  .tcol{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:22px 20px; }
+  .tcol h4{ font-size:1rem; display:flex; align-items:center; gap:8px; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--line-soft); }
+  .tcol h4 .b{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--teal); background:var(--mint); padding:3px 8px; border-radius:6px; }
+  .tcol .tacc{ display:grid; gap:8px; }
+  details.trick{ border:1px solid var(--line); border-radius:10px; background:var(--bg); }
+  details.trick[open]{ background:var(--surface); }
+  details.trick summary{ cursor:pointer; list-style:none; padding:12px 14px; font-weight:700; color:var(--navy); font-size:.88rem; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  details.trick summary::-webkit-details-marker{ display:none; }
+  details.trick summary::after{ content:"+"; color:var(--teal); font-size:1.15rem; font-weight:400; line-height:1; }
+  details.trick[open] summary::after{ content:"\2212"; }
+  details.trick .d{ padding:0 14px 13px; font-size:.85rem; color:var(--ink); line-height:1.55; }
+  .tcol code{ font-family:"JetBrains Mono",monospace; font-size:.82em; background:var(--mint); color:var(--navy); padding:1px 5px; border-radius:4px; }
+  .paste{ margin-top:10px; background:var(--mint2); border:1px solid var(--teal); border-radius:9px; padding:11px 13px; font-size:.85rem; color:var(--navy); font-style:italic; line-height:1.5; }
+  .pm{ margin-left:auto; font-style:normal; font-weight:600; font-size:.62rem; letter-spacing:.04em; text-transform:uppercase; color:var(--teal); background:var(--mint); padding:3px 7px; border-radius:20px; white-space:nowrap; }
+  .pf{ color:#B4632A; background:#FBEEE4; }
+  .dgm{ margin:24px 0; }
+  .dgm-t{ font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); font-weight:700; margin-bottom:14px; }
+  .cyc-flow{ display:flex; flex-wrap:wrap; align-items:stretch; gap:10px; }
+  .cyc-box{ flex:1 1 0; min-width:130px; background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 12px; text-align:center; }
+  .cyc-box b{ display:block; color:var(--navy); font-size:.95rem; margin-bottom:4px; }
+  .cyc-box span{ font-size:.78rem; color:var(--grey); line-height:1.4; }
+  .cyc-box.act{ border-color:var(--teal); background:var(--mint2); }
+  .cyc-arr{ display:flex; align-items:center; color:var(--teal); font-size:1.3rem; font-weight:700; }
+  .cyc-loop{ margin-top:12px; display:flex; gap:14px; align-items:center; background:var(--navy); border-radius:12px; padding:14px 18px; }
+  .cyc-loop .q{ color:var(--teal-br); font-weight:700; font-size:1.5rem; line-height:1; }
+  .cyc-loop p{ color:#DCE2EE; font-size:.9rem; margin:0; } .cyc-loop b{ color:#fff; }
+  .gpair{ display:grid; grid-template-columns:1fr; gap:12px; margin:18px 0; }
+  @media(min-width:640px){ .gpair{ grid-template-columns:1fr auto 1fr; align-items:center; gap:0; } }
+  .gbox{ border:1.5px solid var(--line); border-radius:14px; padding:18px 16px; background:var(--surface); }
+  .gbox.work{ border-color:var(--navy); } .gbox.ctrl{ border-color:var(--teal); background:var(--mint2); }
+  .gbox h5{ color:var(--navy); font-size:1rem; margin:0 0 6px; } .gbox.ctrl h5{ color:var(--teal); }
+  .gbox p{ font-size:.85rem; color:var(--ink); margin:0; line-height:1.5; }
+  .gmid{ text-align:center; padding:10px 16px; }
+  .gmid .a1{ color:var(--grey); font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.04em; }
+  .gmid .big{ font-size:1.6rem; color:var(--teal); line-height:1; margin:4px 0; }
+  .gverdict{ display:grid; grid-template-columns:1fr; gap:10px; margin-top:12px; } @media(min-width:520px){ .gverdict{ grid-template-columns:1fr 1fr; } }
+  .gv{ border-radius:10px; padding:12px 14px; font-size:.85rem; line-height:1.45; }
+  .gv.no{ background:#FDECEC; color:#B23B3B; } .gv.no b{ color:#8f2a2a; }
+  .gv.yes{ background:var(--mint); color:#0d7a63; } .gv.yes b{ color:#0a5c4b; }
+  .needs{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:16px 0; }
+  @media(min-width:720px){ .needs{ grid-template-columns:repeat(4,1fr); } }
+  .need{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 14px; }
+  .need .ic{ width:34px;height:34px;border-radius:9px;background:var(--mint);color:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;margin-bottom:9px; }
+  .need b{ display:block; color:var(--navy); font-size:.9rem; margin-bottom:3px; }
+  .need span{ font-size:.8rem; color:var(--grey); line-height:1.45; }
+  .ex{ margin-top:9px; font-size:.82rem; color:var(--navy); background:var(--mint); border-radius:8px; padding:7px 11px; line-height:1.5; }
+  .ex b{ color:var(--teal); }
+  .aflow{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:12px 0 2px; }
+  .aflow span{ background:var(--mint); color:var(--navy); font-size:.72rem; font-weight:600; padding:4px 9px; border-radius:20px; }
+  .aflow i{ color:var(--teal); font-style:normal; font-weight:700; }
+  .l2,.l2b{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+  .l2b{ margin-top:12px; }
+  .l2box{ background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:11px 14px; text-align:center; min-width:118px; }
+  .l2box b{ display:block; color:var(--navy); font-size:.9rem; } .l2box span{ font-size:.71rem; color:var(--grey); }
+  .l2box.goal{ background:var(--navy); border-color:var(--navy); } .l2box.goal b{ color:#fff; } .l2box.goal span{ color:#9fb0d6; }
+  .l2box.act{ background:var(--mint2); border-color:var(--teal); }
+  .l2done{ background:#FBE7C6; border:1.5px solid #E0A94A; color:#9a6a12; font-weight:700; font-size:.85rem; padding:12px 15px; border-radius:12px; }
+  .l2stop{ background:var(--mint); border:1.5px solid var(--teal); border-radius:12px; padding:11px 14px; text-align:center; } .l2stop b{ display:block; color:#0a5c4b; font-size:.9rem; } .l2stop span{ font-size:.71rem; color:#0d7a63; }
+  .l2arr{ color:var(--teal); font-weight:700; font-size:1.1rem; } .l2arr.yes{ color:#1a9e46; font-size:.8rem; }
+  .l2no{ color:#B23B3B; font-weight:700; font-size:.8rem; } .l2back{ color:var(--grey); font-size:.77rem; font-style:italic; }
+  .loopsvg{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  .loopsvg svg{ width:100%; height:auto; display:block; }
+  .loopsvg .bx-t{ font-weight:700; font-size:16px; } .loopsvg .bx-s{ font-size:11.5px; }
+  .loopsvg .lbl{ font-size:12px; font-weight:700; }
+  details.trick-key{ border:1.5px solid var(--teal); background:var(--mint2); border-radius:12px; margin-bottom:22px; }
+  details.trick-key summary{ cursor:pointer; list-style:none; padding:16px 20px; font-weight:700; color:var(--teal); font-size:1.05rem; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  details.trick-key summary::-webkit-details-marker{ display:none; }
+  details.trick-key summary::after{ content:"+"; color:var(--teal); font-size:1.3rem; font-weight:400; }
+  details.trick-key[open] summary::after{ content:"\2212"; }
+  details.trick-key .d{ padding:0 20px 18px; font-size:.95rem; color:var(--ink); line-height:1.6; max-width:70ch; }
+  details.trick-key code{ font-family:"JetBrains Mono",monospace; font-size:.85em; background:#fff; color:var(--navy); padding:1px 6px; border-radius:4px; }
+
+  @media(min-width:900px){ .funkcje-grid{ grid-template-columns:1fr 1fr !important; } }
+  /* three */
+  .three{ display:grid; grid-template-columns:1fr; gap:14px; }
+  @media(min-width:820px){ .three{ grid-template-columns:1fr 1fr 1.2fr; } }
+  .cell{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:24px 22px; }
+  .cell.hot{ border-color:var(--teal); background:var(--mint2); }
+  .cell .lvl{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--grey); text-transform:uppercase; }
+  .cell h3{ font-size:1.25rem; margin:8px 0; } .cell.hot h3{ color:var(--teal); }
+  .cell p{ color:var(--ink); font-size:.95rem; }
+  .cell .verdict{ margin-top:14px; padding-top:12px; border-top:1px solid var(--line-soft); font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--grey); } .cell.hot .verdict{ color:var(--teal); }
+
+  /* blocks */
+  .block{ display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start; padding:20px 0; border-top:1px solid var(--line); }
+  .block:last-child{ border-bottom:1px solid var(--line); }
+  @media(min-width:720px){ .block{ grid-template-columns:50px 1fr auto; align-items:center; } }
+  .block .num{ font-family:"JetBrains Mono",monospace; font-size:1.15rem; color:var(--teal); width:42px; height:42px; display:grid; place-items:center; border:1px solid var(--line); border-radius:11px; }
+  .block h4{ font-size:1.05rem; } .block p{ color:var(--ink); font-size:.94rem; max-width:52ch; }
+  .block .where{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--grey); background:var(--bg); border:1px solid var(--line-soft); padding:5px 10px; border-radius:8px; white-space:nowrap; justify-self:start; }
+
+  /* trace + loop */
+  .trace{ margin-top:18px; background:var(--navy); border-radius:var(--r); padding:20px 22px; font-family:"JetBrains Mono",monospace; font-size:12.5px; line-height:1.85; color:#DCE2EE; overflow-x:auto; }
+  .trace-h{ color:var(--teal-br); font-size:11px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+  .trace-line{ white-space:nowrap; } .trace-line b{ color:#fff; } .trace-line .c,.trace-line .o{ color:var(--teal-br); } .trace-line .i{ color:#94A0B6; }
+  .loop-back{ display:flex; align-items:center; gap:14px; margin-top:16px; padding:15px 18px; background:var(--mint); border-radius:12px; border-left:3px solid var(--teal); }
+  .loop-back .cyc{ font-size:1.5rem; color:var(--teal); } .loop-back p{ font-size:.95rem; } .loop-back b{ color:var(--navy); }
+  .loop-row{ display:grid; grid-template-columns:1fr; gap:10px; }
+  @media(min-width:860px){ .loop-row{ grid-auto-flow:column; grid-auto-columns:1fr; gap:0; } }
+  .lstep{ position:relative; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 14px; }
+  @media(min-width:860px){ .lstep{ border-radius:0; border-right:none; } .lstep:first-child{ border-radius:12px 0 0 12px; } .lstep:last-child{ border-right:1px solid var(--line); border-radius:0 12px 12px 0; } }
+  .lstep .n{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--teal); text-transform:uppercase; } .lstep b{ display:block; color:var(--navy); margin:4px 0 3px; } .lstep span{ font-size:.83rem; color:var(--grey); }
+  .lstep .arr{ display:none; } @media(min-width:860px){ .lstep:not(:last-child) .arr{ display:block; position:absolute; right:-8px; top:50%; transform:translateY(-50%); z-index:3; width:14px; height:14px; background:var(--bg); border-right:2px solid var(--teal); border-bottom:2px solid var(--teal); rotate:-45deg; } }
+
+  /* compare */
+  .compare{ display:grid; grid-template-columns:1fr; gap:14px; } @media(min-width:720px){ .compare{ grid-template-columns:1fr 1fr; } }
+  .cmp{ border:1px solid var(--line); border-radius:var(--r); padding:22px 20px; background:var(--surface); }
+  .cmp-sdk{ background:var(--mint2); border-color:var(--teal); }
+  .cmp-h{ font-weight:700; color:var(--navy); font-size:1.1rem; margin-bottom:12px; } .cmp-sdk .cmp-h{ color:var(--teal); }
+  .cmp ul{ list-style:none; display:grid; gap:9px; } .cmp li{ position:relative; padding-left:20px; font-size:.93rem; }
+  .cmp li::before{ content:""; position:absolute; left:2px; top:9px; width:6px; height:6px; border-radius:50%; background:var(--grey); } .cmp-sdk li::before{ background:var(--teal); }
+
+  /* terms */
+  .terms{ display:grid; grid-template-columns:1fr; gap:12px; margin-top:8px; }
+  @media(min-width:720px){ .terms{ grid-template-columns:1fr 1fr; } }
+  .term{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; }
+  .term b{ color:var(--navy); } .term .m{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--teal); }
+  .term p{ font-size:.9rem; color:var(--ink); margin-top:4px; }
+
+  /* agents */
+  .agents{ display:grid; grid-template-columns:1fr; gap:16px; } @media(min-width:820px){ .agents{ grid-template-columns:1fr 1fr 1fr; } }
+  .agent{ border:1px solid var(--line); border-radius:var(--r); padding:24px 22px; background:var(--surface); }
+  .agent.new{ border-color:var(--teal); background:var(--mint2); }
+  .agent .tag{ font-family:"JetBrains Mono",monospace; font-size:10.5px; text-transform:uppercase; color:var(--teal); background:var(--mint); padding:4px 9px; border-radius:999px; }
+  .agent.new .tag{ background:var(--teal); color:#fff; }
+  .agent h3{ font-size:1.25rem; margin:10px 0 4px; } .agent .role{ color:var(--ink); margin-bottom:14px; font-size:.93rem; }
+  .agent ul{ list-style:none; display:grid; gap:7px; border-top:1px solid var(--line-soft); padding-top:12px; }
+  .agent li{ position:relative; padding-left:16px; font-size:.87rem; color:var(--ink); }
+  .agent li::before{ content:""; position:absolute; left:2px; top:8px; width:5px; height:5px; border-radius:50%; background:var(--teal); }
+
+  /* findings */
+  .find{ margin-top:18px; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; }
+  .find-h{ background:var(--navy); color:#fff; font-family:"JetBrains Mono",monospace; font-size:12px; padding:12px 18px; }
+  .find-row{ display:grid; grid-template-columns:auto 1fr; gap:14px; padding:14px 18px; border-top:1px solid var(--line-soft); align-items:start; }
+  .find-row .sev{ font-family:"JetBrains Mono",monospace; font-size:10px; text-transform:uppercase; padding:3px 8px; border-radius:6px; white-space:nowrap; }
+  .sev.k{ background:#fdeaea; color:#b42318; } .sev.p{ background:var(--mint); color:var(--teal); } .sev.d{ background:var(--line-soft); color:var(--grey); }
+  .find-row p{ font-size:.92rem; } .find-row b{ color:var(--navy); }
+
+  /* callout narzedzie */
+  .note{ margin-top:24px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:24px 24px; }
+  .note .m{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--teal); text-transform:uppercase; }
+  .note h4{ font-size:1.2rem; margin:6px 0 10px; }
+  .note ul{ list-style:none; display:grid; gap:8px; margin-top:10px; }
+  .note li{ position:relative; padding-left:18px; font-size:.92rem; color:var(--ink); }
+  .note li::before{ content:""; position:absolute; left:2px; top:9px; width:5px; height:5px; border-radius:50%; background:var(--teal); }
+  .note li b{ color:var(--navy); }
+
+  .meme{ display:flex; justify-content:center; }
+  .tt-embed{ border:none; border-radius:12px; width:325px; max-width:100%; height:750px; background:var(--line-soft); }
+
+  footer{ padding:8vh 0 9vh; }
+  .signature{ font-size:clamp(1.3rem,3vw,1.9rem); color:var(--navy); font-weight:700; letter-spacing:-.02em; margin-bottom:24px; max-width:26ch; } .signature .hl{ color:var(--teal); }
+  .foot-grid{ display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; color:var(--grey); font-family:"JetBrains Mono",monospace; font-size:12px; } .foot-grid img{ height:22px; } .foot-grid .b{ color:var(--navy); }
+
+  @media (prefers-reduced-motion: reduce){ *,*::before,*::after{ animation-duration:.01ms !important; } .reveal{ opacity:1 !important; transform:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap"><img src="assets/netim_logo_blue.png" alt="Netim"><span class="meta">poradnik wewnętrzny · 09.07.2026</span></div></div>
+
+<header>
+  <div class="wrap reveal">
+    <span class="eyebrow">Claude Code + agenci</span>
+    <h1><span class="hl">Claude Code</span> i agenci AI: co to jest i jak może nam pomóc</h1>
+    <p class="lede">Prosty przewodnik: czym jest Claude Code, jak używać go na co dzień, czym właściwie jest agent AI i jakie trzy agenty już u nas działają, w tym ten, który sprawdza strony przed oddaniem klientowi.</p>
+    <div class="toc">
+      <a href="#poziomy">1 · Pięć poziomów Claude</a>
+      <a href="#tricki">2 · Wskazówki do pracy</a>
+      <a href="#funkcje">3 · Najważniejsze funkcje</a>
+      <a href="#agent">4 · Co to jest agent</a>
+      <a href="#petla">5 · Pętla i /goal</a>
+      <a href="#sdk">6 · Agent SDK</a>
+      <a href="#mcp">7 · Narzędzia MCP</a>
+      <a href="#skille">8 · Skille do web dev</a>
+      <a href="#predkosc">9 · Prędkość strony</a>
+      <a href="#nasze">10 · Nasze agenty</a>
+      <a href="#prompt">11 · Jak promptować</a>
+    </div>
+  </div>
+</header>
+
+<section id="poziomy">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">01 · mapa</div>
+      <h2 class="sec-title">Pięć poziomów korzystania z Claude: od zwykłych pytań po własnych agentów</h2>
+      <p class="sec-intro">Z Claude można korzystać na pięć sposobów, od najprostszego (zadajesz pytanie, dostajesz odpowiedź) po najbardziej zaawansowany (budujesz własnych agentów, którzy pracują za Ciebie). Ta mapa pokazuje całą drogę i gdzie na niej jesteśmy. Kliknij poziom, żeby zobaczyć, co się na nim dzieje.</p>
+    </div>
+    <div class="tricks reveal" style="grid-template-columns:1fr;">
+      <div class="tacc">
+        <details class="trick"><summary>1 · Pytasz i dostajesz odpowiedź</summary><div class="d">Otwierasz Claude, zadajesz pytanie, czytasz odpowiedź i zamykasz kartę. Używasz go jak lepszej wyszukiwarki. Oszczędzasz ~30 min dziennie. <b>Następny krok:</b> załóż pierwszy projekt. Dodaj kilka ważnych dokumentów i krótko opisz, kim jesteś.</div></details>
+        <details class="trick"><summary>2 · Pracujesz w projektach</summary><div class="d">Projekty dają ciągłość, bo Claude pamięta wcześniejsze ustalenia. Do tego dochodzą pamięć, konektory (Slack, Drive, Gmail, 50+), pliki (Excel z formułami, PPT, Word, PDF), artefakty z pamięcią, wykresy w rozmowie i dodatki do Office. To pomocnik, który pamięta dużo rzeczy. ~5h/tydzień. <b>Granica:</b> Claude nadal nie działa na Twoim komputerze, więc wyniki kopiujesz ręcznie.</div></details>
+        <details class="trick"><summary>3 · Pracujesz razem z Claude na komputerze</summary><div class="d">Claude działa na Twoim komputerze. Ma dostęp do plików w odizolowanej maszynie i tylko do folderów, które mu dasz. Używa skilli, zaplanowanych zadań, sterowania z telefonu (Dispatch) i Claude Design. Claude Design czyta styl marki i przygotowuje materiały do przekazania do Claude Code. To prawdziwy współpracownik. ~10h/tydzień. Minimum dla agencji automatyzacji.</div></details>
+        <details class="trick"><summary>4 · Prowadzisz wiele sesji Claude Code</summary><div class="d">Pracujesz w kilku sesjach naraz. Używasz CLAUDE.md, trybu planowania, sub-agentów, git worktrees i MCP. Zasada: najpierw CLI, MCP dopiero wtedy, gdy naprawdę trzeba. Korzystasz z <code>/compact</code>, <code>/context</code>, prompt caching (koszt -60 do -90%), auto mode, <code>/focus</code>, sprawdzania w Chrome, własnych <code>/komendy</code>, <code>/rewind</code>, <code>/branch</code>, <code>/insights</code> i stylów odpowiedzi. To działa jak mały zespół techniczny. Projekty $5-15k. <b>Granica:</b> Ty stajesz się wąskim gardłem, bo pilnujesz wszystkich sesji.</div></details>
+        <details class="trick"><summary>5 · Budujesz własnych agentów</summary><div class="d">Praca dzieje się także wtedy, gdy śpisz. Rutyny w chmurze startują według harmonogramu, przez API albo zdarzenie z GitHuba. Hooki pilnują zasad: blokują groźne komendy, formatują pliki po edycji i wysyłają sygnał na Slacku. Kanały typu Telegram, Discord i iMessage pozwalają sterować z zewnątrz. Headless i <b>Agent SDK</b> pozwalają zbudować własny produkt na silniku Claude. Dochodzą zdalne sterowanie, auto dream (porządkowanie pamięci), budżety zadań i zespoły agentów. Claude staje się częścią infrastruktury. <b>Bariera to zaufanie</b> - zacznij od małej rutyny o niskim ryzyku i obserwuj, jak działa przez tygodnie.</div></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tricki">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">02 · fundament roboczy</div>
+      <h2 class="sec-title">Wskazówki do codziennej pracy z Claude Code</h2>
+      <p class="sec-intro">Zestaw sprawdzonych nawyków, poukładany od rzeczy najprostszych po te dla zaawansowanych. Dwie zasady wracają w każdej z nich: pilnuj kontekstu i wymuszaj jakość. Kliknij wskazówkę, żeby ją rozwinąć.</p>
+    </div>
+    <div class="tricks reveal">
+      <div class="tcol">
+        <h4><span class="b">poziom 1</span> Podstawy i kontekst</h4>
+        <div class="tacc">
+          <details class="trick"><summary><code>/init</code> na projekcie</summary><div class="d">Skanuje kod i tworzy plik <code>CLAUDE.md</code> - mapę projektu (architektura, konwencje, kluczowe pliki). Daje to, że nie tłumaczysz projektu od nowa co sesję.<div class="ex"><b>Przykład:</b> wchodzisz do nowego repo klienta, piszesz <code>/init</code>, po chwili masz CLAUDE.md z notatką, że to WordPress na motywie potomnym i gdzie leżą szablony.</div></div></details>
+          <details class="trick"><summary>Pasek stanu (<code>/statusline</code>)</summary><div class="d">Pasek na dole terminala pokazuje model, procent użytego kontekstu i koszt. Widzisz, ile miejsca zostało w rozmowie. Nie doprowadzasz do zapchania kontekstu, czyli sytuacji, w której rozmowa robi się tak zapchana, że model gubi sens.<div class="ex"><b>Przykład:</b> widzisz na pasku „78%", więc dajesz <code>/compact</code>, zanim rozmowa zacznie gubić wątek.</div></div></details>
+          <details class="trick"><summary>Mówienie zamiast pisania (<code>/voice</code> lub dyktowanie)</summary><div class="d">Mówisz zamiast pisać. Szybciej wrzucasz myśli, zwłaszcza przy dłuższych poleceniach.<div class="ex"><b>Przykład:</b> zamiast wyklikać akapit polecenia, dyktujesz je w 10 sekund, idąc po kawę.</div></div></details>
+          <details class="trick"><summary>Dawaj tylko potrzebny kontekst</summary><div class="d">Dawaj tylko pliki i informacje potrzebne do zadania. Duże problemy dziel na małe kroki. Mniej szumu w kontekście daje lepsze wyniki.<div class="ex"><b>Przykład:</b> do poprawki jednego formularza wrzucasz tylko ten plik, a nie cały motyw.</div></div></details>
+          <details class="trick"><summary><code>/context</code> pokazuje, co zajmuje miejsce</summary><div class="d">Pokazuje w procentach, co zużywa tokeny: pliki, MCP i system prompt. Dzięki temu widzisz, co przeładowuje sesję i co warto przyciąć.<div class="ex"><b>Przykład:</b> widzisz, że jeden podpięty MCP zjada 40% okna, i go odpinasz.</div></div></details>
+          <details class="trick"><summary><code>/compact</code> przy ~60%, <code>/clear</code> między zadaniami</summary><div class="d"><code>/compact</code> skraca historię rozmowy. Możesz kazać zachować ważne decyzje, na przykład adres API i schemat bazy. <code>/clear</code> czyści rozmowę przy zmianie zadania. CLAUDE.md i pliki zostają, więc nie zaczynasz od zera.<div class="ex"><b>Przykład:</b> kończysz robotę nad koszykiem, dajesz <code>/clear</code> i bierzesz się za bloga z czystą głową.</div></div></details>
+          <details class="trick"><summary>Tryb planowania przed edycją (shift+tab)</summary><div class="d">Claude czyta i planuje, ale jeszcze nic nie zmienia. Rozpisuje kroki i dopytuje przed pierwszą linijką kodu. To mocno zmniejsza liczbę późniejszych poprawek.<div class="ex"><b>Przykład:</b> przed przebudową nagłówka Claude wypisuje 5 kroków i pyta, czy zachować stare klasy CSS.</div></div></details>
+          <details class="trick"><summary>Dawaj problem, nie tylko rozkaz</summary><div class="d">Pytaj: „jak byś to rozwiązał?”, zamiast dawać tylko suche komendy. Gdy Claude sam przemyśli podejście i je uzasadni, zwykle daje lepszy wynik.<div class="ex"><b>Przykład:</b> „mam wolną stronę produktu, jak byś to rozwiązał?” zamiast suchego „zmniejsz obrazki”.</div></div></details>
+          <details class="trick"><summary>Każ dopytywać, aż dobrze zrozumie</summary><div class="d">Użyj zdania: „Dopytuj, aż jesteś w 95% pewien, co mam na myśli.” To skraca poprawki, bo model najpierw wyjaśnia niejasności.<div class="ex"><b>Przykład:</b> przy niejasnym briefie Claude zadaje 3 pytania, zanim ruszy, i trafia za pierwszym razem.</div></div></details>
+          <details class="trick"><summary>Wbudowane sprawdzanie w liście zadań</summary><div class="d">Wpisz kroki kontroli wprost do listy zadań: zbuduj, zrób zrzut ekranu i obejrzyj, otwórz narzędzia deweloperskie. „Nie idź dalej, póki nie masz pewności.” Jakość powstaje w trakcie, nie doklejasz jej na końcu.<div class="ex"><b>Przykład:</b> w liście zadań dopisujesz „zrób zrzut mobile i sprawdź, czy menu się otwiera” i Claude sam to robi.</div></div></details>
+        </div>
+      </div>
+      <div class="tcol">
+        <h4><span class="b">poziom 2</span> Szybciej i lepiej</h4>
+        <div class="tacc">
+          <details class="trick"><summary>Sub-agenci pracują równolegle</summary><div class="d">Główny wątek uruchamia osobnych sub-agentów. Każdy ma własny kontekst i model. Pracują naraz i oddają wnioski. Masz zespół zamiast jednego agenta, a główny wątek zostaje czysty.<div class="ex"><b>Przykład:</b> jeden sub-agent pisze stronę „O nas”, drugi „Kontakt”, oba naraz.</div></div></details>
+          <details class="trick"><summary>Własne skille (<code>.claude/skills</code>)</summary><div class="d">Skille to pliki z instrukcjami wielokrotnego użytku, na przykład techdebt.md albo codereview.md. Uruchamiasz je komendą. Zapisujesz je do repo, więc cały zespół ma te same procedury i dostaje powtarzalny wynik.<div class="ex"><b>Przykład:</b> raz piszesz skill „audyt-meta” i odpalasz go tak samo na każdym kliencie.</div></div></details>
+          <details class="trick"><summary>Haiku dla sub-agentów</summary><div class="d">Tani model do prostych rzeczy i przemielenia dużych danych; Opus w głównym wątku dostaje tylko wnioski. Niższy koszt bez utraty jakości tam, gdzie się liczy.<div class="ex"><b>Przykład:</b> Haiku przemiela 200 adresów z sitemapy, a Opus dostaje samą listę problemów.</div></div></details>
+          <details class="trick"><summary>Odświeżaj CLAUDE.md po ważnych wnioskach</summary><div class="d">Dopisuj nowe wzorce, pułapki i zasady projektu odkryte w sesji. Claude nie powtarza wtedy tych samych błędów i z czasem lepiej zna projekt.<div class="ex"><b>Przykład:</b> odkrywasz, że hosting trzyma stare 404 przez godzinę, dopisujesz to i Claude już o tym pamięta.</div></div></details>
+          <details class="trick"><summary>CLAUDE.md kieruje do innych plików</summary><div class="d">CLAUDE.md ładuje się do każdej rozmowy. Trzymaj go na 150-200 linii. Resztę, na przykład zasady stylu i kontekst biznesowy, linkuj do osobnych plików. Nie marnujesz tokenów na rzeczy, które nie zawsze są potrzebne.<div class="ex"><b>Przykład:</b> zamiast wklejać cały brandbook, w CLAUDE.md dajesz jedną linię: „zasady marki w pliku brand.md”.</div></div></details>
+          <details class="trick"><summary>Zatrzymaj zły kierunek i popraw polecenie</summary><div class="d">Gdy widzisz zły kierunek, nie czekaj do końca. Naciśnij Escape, popraw polecenie i wyślij je ponownie. Każdy token w złą stronę marnuje kontekst.<div class="ex"><b>Przykład:</b> widzisz, że edytuje nie ten plik, Escape, „nie ten, popraw header.php”.</div></div></details>
+          <details class="trick"><summary>Podważaj słabe wyniki</summary><div class="d">Powiedz wprost: „To za słabe, zrób inaczej, bardziej elegancko.” Drugie podejście bywa dużo lepsze. Gdy wynik jest dobry, każ zapisać wniosek do skilla albo CLAUDE.md, żeby błąd nie wrócił.<div class="ex"><b>Przykład:</b> „ta sekcja wygląda generycznie, daj bardziej redakcyjny układ”.</div></div></details>
+          <details class="trick"><summary><code>/rewind</code> cofa rozmowę</summary><div class="d">Cofa do wcześniejszego punktu rozmowy bez zaczynania od nowa. To szybkie i czyste cofnięcie.<div class="ex"><b>Przykład:</b> po trzech nietrafionych poprawkach wracasz <code>/rewind</code> do wersji sprzed nich.</div></div></details>
+          <details class="trick"><summary>Hooki wysyłają powiadomienia</summary><div class="d">Hook może puścić dźwięk, gdy sesja skończy albo czeka na Twoją uwagę. Możesz robić coś innego i wrócić do tej sesji, która prosi o decyzję.<div class="ex"><b>Przykład:</b> „ding”, gdy render gotowy, więc nie musisz gapić się w terminal.</div></div></details>
+          <details class="trick"><summary>Zrzuty ekranu pomagają Claude widzieć problem</summary><div class="d">Dawaj Claude zrzuty błędów i inspiracji. Przy stronach używaj pętli: zrzut ekranu, poprawka, kolejny zrzut. Po 3 przejściach pierwsza wersja zwykle jest dużo lepsza.<div class="ex"><b>Przykład:</b> wklejasz zrzut rozjechanego menu i Claude od razu widzi, co poprawić.</div></div></details>
+          <details class="trick"><summary>Chrome DevTools sprawdza stronę w przeglądarce</summary><div class="d">Claude otwiera przeglądarkę, klika, testuje funkcje i wypełnia formularze. Dzięki temu sprawdza realne działanie frontu, a nie tylko wygląd.<div class="ex"><b>Przykład:</b> Claude wypełnia formularz kontaktowy i sprawdza, czy wiadomość naprawdę wychodzi.</div></div></details>
+          <details class="trick"><summary>Odtwarzaj styl z dobrych przykładów</summary><div class="d">Dajesz zrzut ładnej strony i prosisz: „zrób w tym stylu”. Claude odtwarza wzorce. Traktuj to jako punkt startu i dodaj własne elementy.<div class="ex"><b>Przykład:</b> zrzut ładnego nagłówka konkurencji, „zrób w tym duchu, ale nasze kolory”.</div></div></details>
+        </div>
+      </div>
+      <div class="tcol">
+        <h4><span class="b">poziom 3</span> Dla zaawansowanych</h4>
+        <div class="tacc">
+          <details class="trick"><summary>Git worktrees: kilka bezpiecznych kopii pracy</summary><div class="d"><code>claude --worktree &lt;feature&gt;</code> tworzy osobną gałąź i osobny obszar roboczy. Kilka sesji może pracować nad jednym projektem naraz i nie nadpisuje sobie plików. Na końcu robisz scalenie.<div class="ex"><b>Przykład:</b> w jednej kopii robisz nowy nagłówek, w drugiej poprawki SEO, nic się nie gryzie.</div></div></details>
+          <details class="trick"><summary>Adres API zamiast MCP przy jednej funkcji</summary><div class="d">Gdy potrzebujesz jednej rzeczy, na przykład czytania 1 bazy, MCP ładuje do kontekstu opisy wielu narzędzi. Czasem lepiej wpisać na sztywno jeden adres API. To oszczędza dużo tokenów.<div class="ex"><b>Przykład:</b> potrzebujesz tylko odczytu jednej tabeli, więc dajesz jeden adres zamiast ładować cały MCP.</div></div></details>
+          <details class="trick"><summary><code>/loop</code> powtarza kontrolę w tle</summary><div class="d">Przykład: „Co 5 minut sprawdź wdrożenie.” Claude monitoruje PR, logi i budowę projektu w tle. Przerywa dopiero wtedy, gdy potrzebuje Twojej uwagi. Działa do 3 dni.</div></details>
+          <details class="trick"><summary>VPS: sesje działają dalej na serwerze</summary><div class="d">Claude Code na serwerze działa dalej, gdy zamkniesz laptop. Wchodzisz przez SSH albo sterujesz z Telegrama. To dobre do długich zadań, których nie chcesz pilnować w terminalu.<div class="ex"><b>Przykład:</b> odpalasz długą migrację, zamykasz laptop, wieczorem sprawdzasz postęp z Telegrama.</div></div></details>
+          <details class="trick"><summary>Sterowanie z telefonu</summary><div class="d">Startujesz zadanie na kompie, sterujesz dalej z komórki lub przeglądarki. Kod nie opuszcza twojej maszyny, to tylko zdalne połączenie.<div class="ex"><b>Przykład:</b> startujesz zadanie w biurze, w tramwaju akceptujesz kolejny krok z telefonu.</div></div></details>
+          <details class="trick"><summary>Analityka bez pisania SQL</summary><div class="d">Podpinasz CLI, na przykład BigQuery <code>bq</code>, i pytasz zwykłym językiem: „dziesięć największych źródeł przychodu w kwartale”. Claude tłumaczy to na zapytanie i je uruchamia. Nie musisz znać SQL.</div></details>
+          <details class="trick"><summary>Ultra think: więcej czasu na trudne decyzje</summary><div class="d">Słowo „ultrathink” daje modelowi większy budżet myślenia, około ~32k tokenów, zanim odpowie. Używaj tego do trudnych decyzji architektonicznych i szukania przyczyn błędów, nie do prostych poprawek.<div class="ex"><b>Przykład:</b> „ultrathink, zaprojektuj strukturę adresów dla 500 stron miast”.</div></div></details>
+          <details class="trick"><summary>Uprawnienia zamiast „dangerously skip”</summary><div class="d">Zamiast pomijać wszystkie pytania, jawnie pozwól na bezpieczne komendy i zablokuj destrukcyjne (blokada ma priorytet nad zgodą). Ta sama szybkość, bez ryzyka.<div class="ex"><b>Przykład:</b> pozwalasz na <code>npm run build</code>, blokujesz <code>rm -rf</code> i nie klikasz już zgód.</div></div></details>
+          <details class="trick"><summary>Zespoły agentów pracują nad jednym celem</summary><div class="d">To podobne do sub-agentów, ale agenci rozmawiają ze sobą. Mają wspólną listę zadań i dzielą się pracą. To droższe i wolniejsze, ale przy dużym projekcie może dać spójniejszy wynik.<div class="ex"><b>Przykład:</b> trzy persony (SEO, UX, programista) spierają się o układ strony, aż uzgodnią jeden.</div></div></details>
+          <details class="trick"><summary>Context7 MCP podaje aktualną dokumentację</summary><div class="d">Context7 MCP dodaje aktualną dokumentację bibliotek, na przykład React, Next, Mongo i setek innych, zanim Claude napisze kod. Dzięki temu model nie opiera się na starej pamięci o API, które mogło się zmienić.<div class="ex"><b>Przykład:</b> piszesz komponent w najnowszym Next, a Context7 podaje aktualne API, więc bez przestarzałego kodu.</div></div></details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="funkcje">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">03 · funkcje</div>
+      <h2 class="sec-title">Dwanaście funkcji Claude Code, które oszczędzają najwięcej pracy</h2>
+      <p class="sec-intro">To nie są najciekawsze funkcje techniczne, tylko te, które najbardziej zmieniają codzienną pracę. Kliknij funkcję, żeby zobaczyć, co robi.</p>
+    </div>
+    <div class="tricks reveal" style="grid-template-columns:1fr;">
+      <div style="display:grid;gap:20px;" class="funkcje-grid">
+      <div class="tcol"><h4><span class="b">funkcje 1-6</span> Codzienna praca</h4><div class="tacc">
+        <details class="trick"><summary>1 · Skille jako stałe instrukcje</summary><div class="d">Skille dają największą dźwignię. To „przepisy” w markdown w folderze .claude. Agent czyta przepis i robi zadanie tak samo za każdym razem. Nie musisz wklejać tego samego polecenia. Możesz pisać własne skille albo użyć gotowych z pluginów. Skill może mieć wiele kroków albo być krótką komendą z 4 zdaniami. Działa w Code, Chat i Co-work.</div></details>
+        <details class="trick"><summary>2 · Pasek stanu sesji</summary><div class="d">Pasek na dole pokazuje model, poziom wysiłku, procent kontekstu i tokeny, na przykład 274k/1M. Wiesz, kiedy użyć <code>/compact</code>, <code>/clear</code> albo przekazać pracę dalej. <code>/statusline</code> pozwala ustawić, co pasek ma pokazywać. Pomagają też <code>/context</code>, które pokazuje, co zużywa tokeny, i <code>/usage</code>, które pokazuje statystyki sesji i tygodnia.</div></details>
+        <details class="trick"><summary>3 · Rutyny uruchamiane z harmonogramu</summary><div class="d">Rutyna uruchamia agenta, nie zwykły skrypt. Przez <code>/schedule</code> albo aplikację desktopową odpalasz cały terminal Claude o wybranej porze, lokalnie albo w chmurze. Dostajesz agenta, który wraca do pracy według planu, zamiast pojedynczego wywołania API.</div></details>
+        <details class="trick"><summary>4 · Zdalne sterowanie sesją</summary><div class="d">Sterujesz lokalną sesją Claude z telefonu albo przeglądarki. Wszystko jest zsynchronizowane. Możesz wyjść od komputera, a sesja dalej pracuje. Kod nie opuszcza Twojej maszyny.</div></details>
+        <details class="trick"><summary>5 · <code>/loop</code> powtarza polecenie</summary><div class="d"><code>/loop</code> powtarza polecenie co określony czas. Używa narzędzia cron create. Przykład: „Co minutę przypomnij mi o X”. Jest związany z sesją, więc gdy zamkniesz terminal, pętla się zamyka. Możesz też napisać zwyczajnie: „ustaw powtarzalną pętlę co 20 minut”. Działa do 7 dni.</div></details>
+        <details class="trick"><summary>6 · Sub-agenci do równoległej pracy</summary><div class="d">Sub-agenci startują w tle, sami albo na żądanie. Pracują równolegle, ale nie rozmawiają ze sobą. Raportują tylko do głównego terminala, który ich uruchomił. Definiujesz ich jako pliki markdown w .claude/agents: co robią, jakich narzędzi używają i z których skilli korzystają.</div></details>
+      </div></div>
+      <div class="tcol"><h4><span class="b">funkcje 7-12</span> Gdy zadanie jest większe</h4><div class="tacc">
+        <details class="trick"><summary>7 · <code>/rewind</code> cofa kod i rozmowę</summary><div class="d">Cofa kod i rozmowę do wcześniejszego punktu. Nie musisz pisać: „nie, źle, zrób inaczej”. Wracasz do konkretnego miejsca i ruszasz stamtąd.</div></details>
+        <details class="trick"><summary>8 · Zespoły agentów dyskutują nad zadaniem</summary><div class="d">To podobne do sub-agentów, ale agenci rozmawiają ze sobą i wymieniają argumenty. Możesz zrobić grupę ról, na przykład nowicjusz, CEO i sceptyk. Analizują temat w rundach, aż dojdą do wspólnego wniosku. To zużywa dużo tokenów i jest eksperymentalne. Dobre do burzy mózgów z kilku perspektyw.</div></details>
+        <details class="trick"><summary>9 · Automatyczna pamięć Claude</summary><div class="d">Claude sam poprawia swoją pamięć, czyli CLAUDE.md, bez proszenia. Co jakiś czas sprawdza, co robiliśmy, i dopisuje ważne wnioski o projekcie. Włączasz to w <code>memory</code>.</div></details>
+        <details class="trick"><summary>10 · <code>/insights</code> pokazuje, jak pracujesz</summary><div class="d">To raport z ostatnich 30 dni pracy w Claude Code. Pokazuje, co robisz często, gdzie tracisz czas, których funkcji warto używać częściej i jakie skille warto zbudować. Dostajesz raport HTML ze statystykami, na przykład 1500 wiadomości i 153 sesje.</div></details>
+        <details class="trick"><summary>11 · Ultra plan do dużych zadań</summary><div class="d">Ultra plan przenosi planowanie do chmury, gdzie kilka agentów planuje naraz. Używaj tego do dużych i niejasnych zadań. Piszesz „ultra plan…”, Claude planuje w chmurze jako zadanie w tle, a Ty możesz dalej pracować w terminalu.</div></details>
+        <details class="trick"><summary>12 · <code>/goal</code> pracuje aż do jasnej mety</summary><div class="d"><code>/goal</code> to wbudowane narzędzie, nie zwykłe polecenie. Dajesz zadanie i <b>linię mety</b>, czyli warunek, który Claude potrafi sprawdzić. Potem Claude pracuje tura po turze sam, aż warunek spełni. Pod spodem działają dwie role: <b>pracownik</b>, czyli główny model, który robi zadanie, i <b>kontroler</b>, który po każdym kroku pyta: „czy cel jest osiągnięty?”. Jeśli nie, kontroler mówi, czego brakuje, i uruchamia kolejną turę. Pętla trwa, aż kontroler powie „gotowe”. Meta musi być sprawdzalna. Źle: „posprzątaj pliki, zrób dobrze”. Kontroler nie wie, kiedy to potwierdzić. Dobrze: „każdy plik w folderze paragony ma nazwę data plus sprzedawca, jest w folderach miesięcznych, a plik wydatki.csv ma jeden wiersz na paragon”. Zawsze dodaj bezpiecznik: „przerwij po 30 turach albo 45 minutach”. Samo <code>/goal</code> bez treści pokazuje pulpit: ile było tur, ile zostało zużyte i ile czasu minęło. Do pracy bez pilnowania włącz zgodę z góry. Wymaga planu Pro albo Max.</div></details>
+      </div></div>
+      </div>
+    </div>
+    <p class="blk">Poza tą dwunastką jest jeszcze kilkadziesiąt funkcji, od podstaw po dodatki: <code>/clear</code>, <code>/compact</code>, wznawianie rozmowy, web search i fetch, <code>/theme</code>, rozszerzenie do VS Code, tryb głosowy, Co-work, konektory, dynamic workflows, <code>/deep research</code>, git worktrees, ultra review, computer use, Google Workspace CLI, Dispatch, aplikacja desktopowa, auto mode, hooki, poziomy wysiłku, agent view, prompt caching. Najważniejsze masz wyżej.</p>
+  </div>
+</section>
+
+<section id="agent">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">04 · fundament pojęcia</div>
+      <h2 class="sec-title">Czym agent różni się od skryptu i chatbota</h2>
+      <p class="sec-intro">Claude Code ma sens, bo nie jest tylko czatem. Agent dostaje cel, sam dobiera narzędzia, sprawdza wynik i poprawia pracę. Zwykły czat odpowiada. Agent działa.</p>
+    </div>
+    <div class="three reveal">
+      <div class="cell"><div class="lvl">poziom 1</div><h3>Skrypt</h3><p>Robi dokładnie te kroki, które ktoś wcześniej zapisał. Gdy strona się zmieni, skrypt często przestaje działać.</p><div class="verdict">// wykonuje zapisane instrukcje</div></div>
+      <div class="cell"><div class="lvl">poziom 2</div><h3>Chatbot</h3><p>Rozmawia, doradza i pisze tekst. Sam nie kliknie strony, nie zapisze pliku i nie sprawdzi wyniku.</p><div class="verdict">// człowiek nadal robi rękami</div></div>
+      <div class="cell hot"><div class="lvl">poziom 3</div><h3>Agent</h3><p>Dostaje cel, a nie listę kroków. Sam wybiera narzędzie, patrzy na wynik, poprawia się i idzie dalej.</p><div class="verdict">// model językowy z narzędziami i pętlą decyzji</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="petla">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">05 · pętla</div>
+      <h2 class="sec-title">Pętla: jak agent sam powtarza pracę, aż zrobi ją do końca</h2>
+      <p class="sec-intro">Każdy rysuje pętlę agenta inaczej, ale pod spodem zawsze jest to samo. Agent dostaje cel, sam myśli, co zrobić, robi to jakimś narzędziem, patrzy na wynik i pyta sam siebie: już gotowe? Jak nie, kręci kolejne kółko. Jak tak, kończy. Ty nie stoisz nad nim po każdym kroku. Najmocniejsza wersja tej pętli to komenda <code>/goal</code>, którą rozkładamy niżej.</p>
+    </div>
+    <div class="reveal">
+      <div class="dgm">
+        <div class="dgm-t">Pod spodem każda pętla agenta wygląda tak samo</div>
+        <div class="loopsvg">
+          <svg viewBox="0 0 940 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pętla agenta">
+            <defs>
+              <marker id="ah" markerWidth="12" markerHeight="12" refX="8.5" refY="3.5" orient="auto"><path d="M0,0 L8.5,3.5 L0,7 Z" fill="#12B79B"/></marker>
+              <marker id="ahg" markerWidth="12" markerHeight="12" refX="8.5" refY="3.5" orient="auto"><path d="M0,0 L8.5,3.5 L0,7 Z" fill="#1a9e46"/></marker>
+            </defs>
+            <!-- strzalki -->
+            <path d="M195,165 C265,120 305,78 360,72" fill="none" stroke="#12B79B" stroke-width="2.5" marker-end="url(#ah)"/>
+            <path d="M455,120 L455,168" fill="none" stroke="#12B79B" stroke-width="2.5" marker-end="url(#ah)"/>
+            <path d="M520,198 C620,150 675,80 738,70" fill="none" stroke="#1a9e46" stroke-width="2.5" marker-end="url(#ahg)"/>
+            <path d="M488,238 C575,272 655,300 726,308" fill="none" stroke="#12B79B" stroke-width="2.5" marker-end="url(#ah)"/>
+            <path d="M726,320 L437,320" fill="none" stroke="#12B79B" stroke-width="2.5" marker-end="url(#ah)"/>
+            <path d="M320,278 C338,205 356,140 402,120" fill="none" stroke="#12B79B" stroke-width="2.5" marker-end="url(#ah)"/>
+            <text x="612" y="118" class="lbl" fill="#1a9e46" text-anchor="middle">tak</text>
+            <text x="556" y="268" class="lbl" fill="#B23B3B" text-anchor="middle">nie</text>
+            <!-- boxy -->
+            <g><rect x="18" y="122" width="180" height="92" rx="14" fill="#12224F"/><text x="108" y="162" class="bx-t" fill="#fff" text-anchor="middle">Twój cel</text><text x="108" y="182" class="bx-s" fill="#9fb0d6" text-anchor="middle">i co znaczy „gotowe”</text></g>
+            <g><rect x="360" y="28" width="190" height="86" rx="14" fill="#fff" stroke="#12B79B" stroke-width="1.5"/><text x="455" y="63" class="bx-t" fill="#12224F" text-anchor="middle">Myśli</text><text x="455" y="83" class="bx-s" fill="#7C818C" text-anchor="middle">co zrobić dalej</text></g>
+            <polygon points="455,166 512,208 455,250 398,208" fill="#FBE7C6" stroke="#E0A94A" stroke-width="1.5"/><text x="455" y="213" class="lbl" fill="#9a6a12" text-anchor="middle">gotowe?</text>
+            <g><rect x="738" y="28" width="184" height="86" rx="14" fill="#E4F7F1" stroke="#12B79B" stroke-width="1.5"/><text x="830" y="63" class="bx-t" fill="#0a5c4b" text-anchor="middle">Koniec</text><text x="830" y="83" class="bx-s" fill="#0d7a63" text-anchor="middle">zatrzymuje się</text></g>
+            <g><rect x="726" y="278" width="196" height="88" rx="14" fill="#F2FBF8" stroke="#12B79B" stroke-width="1.5"/><text x="824" y="315" class="bx-t" fill="#12224F" text-anchor="middle">Działa</text><text x="824" y="335" class="bx-s" fill="#7C818C" text-anchor="middle">używa narzędzia</text></g>
+            <g><rect x="228" y="278" width="210" height="88" rx="14" fill="#F2FBF8" stroke="#12B79B" stroke-width="1.5"/><text x="333" y="315" class="bx-t" fill="#12224F" text-anchor="middle">Patrzy na wynik</text><text x="333" y="335" class="bx-s" fill="#7C818C" text-anchor="middle">co się zmieniło</text></g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="dgm" style="margin-top:22px">
+        <div class="dgm-t">Warunek stopu decyduje, jaka to pętla</div>
+        <div class="gpair">
+          <div class="gbox"><h5><code>/loop</code> · luźny warunek</h5><p>„Co 5 minut sprawdzaj wdrożenie.” Leci w kółko, aż Ty przerwiesz albo coś wymaga uwagi. To pętla <b>bez celu</b>.</p></div>
+          <div class="gmid"><div class="a1">ta sama pętla</div><div class="big">→</div><div class="a1">mocniejszy wariant</div></div>
+          <div class="gbox ctrl"><h5><code>/goal</code> · cel do sprawdzenia</h5><p>„Rób, aż plik X istnieje.” Leci, aż osiągnie konkretny, sprawdzalny <b>cel</b>. O tej wersji cała reszta sekcji.</p></div>
+        </div>
+        <div class="cyc-loop" style="margin-top:12px"><span class="q">?</span><p>Czyli <b>pętla bez celu istnieje</b> (to np. <code>/loop</code>), ale musi mieć warunek stopu. <code>/goal</code> to pętla, w której tym warunkiem jest sprawdzalny cel.</p></div>
+      </div>
+
+      <p class="blk">Piszesz <code>/goal</code> i jedno zdanie z celem, a Claude pracuje tura po turze, aż go osiągnie. Pod spodem działają <strong>dwie role naraz</strong>: jedna robi, druga sprawdza.</p>
+      <div class="dgm">
+        <div class="dgm-t">Jak /goal pilnuje, żeby zrobić do końca</div>
+        <div class="gpair">
+          <div class="gbox work"><h5>Pracownik</h5><p>Robi robotę: pisze, poprawia, porządkuje pliki. To główny model Claude, który wykonuje zadanie.</p></div>
+          <div class="gmid"><div class="a1">po każdej turze</div><div class="big">⇄</div><div class="a1">sprawdza</div></div>
+          <div class="gbox ctrl"><h5>Kontroler</h5><p>Po każdym kroku pyta o jedno: „czy cel już osiągnięty?” i decyduje, czy praca ma iść dalej.</p></div>
+        </div>
+        <div class="gverdict">
+          <div class="gv no"><b>Nie →</b> mówi pracownikowi, czego brakuje, i odpala kolejną turę</div>
+          <div class="gv yes"><b>Tak →</b> Claude kończy i się zatrzymuje</div>
+        </div>
+      </div>
+
+      <p class="blk" style="margin-top:18px">Najważniejsza jest dobra meta. Kontroler widzi tylko to, co zgłosi pracownik, więc warunek stopu musi być <strong>sprawdzalny</strong>. Mgliste cele kręcą się w kółko i zużywają tokeny:</p>
+      <div class="compare">
+        <div class="cmp"><div class="cmp-h">Zła meta (kręci się bez końca)</div><ul>
+          <li>„posprzątaj pliki i zrób porządek”</li>
+          <li>„nie rób błędów”, „zrób to dobrze”</li>
+          <li>kontroler nie ma jak potwierdzić, że gotowe, więc nigdy nie mówi „stop”</li>
+        </ul></div>
+        <div class="cmp cmp-sdk"><div class="cmp-h">Dobra meta (da się zweryfikować)</div><ul>
+          <li>„każdy plik w folderze paragony ma nazwę data + sprzedawca, jest posortowany do folderów miesięcznych, a plik wydatki.csv istnieje z jednym wierszem na paragon”</li>
+          <li>konkretny plik, który ma istnieć, konkretny folder, który ma powstać</li>
+          <li>kontroler patrzy w rozmowę i mówi „tak, to jest zrobione”</li>
+        </ul></div>
+      </div>
+
+      <p class="blk" style="margin-top:18px">Przykład (pizzeria): jedno <code>/goal</code> „zbuduj tydzień treści na social media, 15 postów na 3 platformy, każdy z podpisem, hashtagami i obrazkiem, zapisz do PDF, zatrzymaj się po 20 turach”. Odchodzisz od komputera i wracasz do gotowych 15 postów. To robota, za którą osoba od social mediów bierze setki złotych miesięcznie.</p>
+
+      <div class="dgm">
+        <div class="dgm-t">Czego /goal potrzebuje, żeby zadziałać dobrze</div>
+        <div class="needs">
+          <div class="need"><div class="ic">1</div><b>Jasna meta</b><span>warunek, który da się sprawdzić (np. „istnieje plik X”), a nie „zrób dobrze”</span></div>
+          <div class="need"><div class="ic">2</div><b>Bezpiecznik</b><span>„zatrzymaj się po 30 turach albo 45 minutach”, żeby nie mieliło w nieskończoność</span></div>
+          <div class="need"><div class="ic">3</div><b>Zgoda z góry</b><span>żeby nie pytało o każdy krok, gdy odchodzisz od komputera</span></div>
+          <div class="need"><div class="ic">4</div><b>Plan Pro/Max</b><span>pętla potrafi zużyć sporo, warto najpierw sprawdzić <code>/usage</code></span></div>
+        </div>
+      </div>
+
+      <div class="trace">
+        <div class="trace-h">Przykład: /goal + sprawdzenie strony przed oddaniem klientowi</div>
+        <div class="trace-line"><span class="c">/goal:</span> „sprawdź laser-lab.pl przed oddaniem klientowi, gotowe gdy sprawdzone desktop i mobile”</div>
+        <div class="trace-line"><span class="o">myślę →</span> sprawdzę desktop, użyję <b>zbadaj_strone</b></div>
+        <div class="trace-line"><span class="i">widzę ←</span> 3 zepsute obrazy, 2 martwe kliknięcia</div>
+        <div class="trace-line"><span class="o">robię →</span> zrobię zrzuty i obejrzę, <b>zrzuty_strony</b> + <b>Read</b></div>
+        <div class="trace-line"><span class="i">widzę ←</span> karuzela na górze pokazuje dwa slajdy naraz</div>
+        <div class="trace-line"><span class="o">koniec →</span> warunek spełniony, piszę raport, <b>zapisz_raport</b></div>
+      </div>
+
+      <p class="blk">Uczciwie: większość zadań nie potrzebuje pętli, wystarczy jedna sesja z dobrym poleceniem. Pętla zarabia dopiero przy większych rzeczach, gdzie jedna rola robi, a druga sprawdza.</p>
+    </div>
+  </div>
+</section>
+
+<section id="czesci">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">06 · anatomia</div>
+      <h2 class="sec-title">Pięć części, z których zbudowany jest każdy agent</h2>
+      <p class="sec-intro">Każdy agent to te same pięć części, tylko z inną treścią. Poznasz jeden, umiesz wszystkie.</p>
+    </div>
+    <div class="blocks reveal">
+      <div class="block"><div class="num">1</div><div><h4>Rola</h4><p>Kim agent jest i jak ma myśleć. Stały charakter, nie zadanie na dziś.</p></div><div class="where">systemPrompt</div></div>
+      <div class="block"><div class="num">2</div><div><h4>Narzędzia</h4><p>Ręce agenta. Model czyta opis narzędzia i sam decyduje, kiedy go użyć.</p></div><div class="where">tool() + MCP</div></div>
+      <div class="block"><div class="num">3</div><div><h4>Cel</h4><p>Co ma osiągnąć teraz. Nie „jak”, tylko „co”. Drogę wymyśla sam.</p></div><div class="where">prompt</div></div>
+      <div class="block"><div class="num">4</div><div><h4>Pętla</h4><p>Rozumuj, działaj, obserwuj, powtórz aż cel spełniony.</p></div><div class="where">for await (query())</div></div>
+      <div class="block"><div class="num">5</div><div><h4>Sandbox</h4><p>Co mu wolno. Tylko wybrane narzędzia. Zero Basha, zero kasowania.</p></div><div class="where">allowedTools</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="sdk">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">07 · po co nam SDK</div>
+      <h2 class="sec-title">Agent SDK: co to jest i jak zmienia pracę agenta</h2>
+      <p class="sec-intro">Agent SDK to zestaw narzędzi dla programistów, którym budujesz własnego agenta na silniku Claude. Nie robi Claude mądrzejszym. Bierze tę samą pętlę, którą ma Claude Code, i zamyka ją w programie: taki agent działa sam o wyznaczonej porze, ma dostęp tylko do narzędzi, które mu dasz, a wynik trafia tam, gdzie chcesz (Slack, plik, kolejne narzędzie).</p>
+    </div>
+    <div class="compare reveal">
+      <div class="cmp cmp-cc"><div class="cmp-h">Claude Code (interaktywnie)</div><ul><li>ty przy klawiaturze, sterujesz na bieżąco</li><li>za każdym razem trochę inaczej</li><li>wszystkie narzędzia: Bash, edycja plików</li><li>wynik zostaje w oknie czatu</li></ul></div>
+      <div class="cmp cmp-sdk"><div class="cmp-h">Agent z SDK (program)</div><ul><li>sam, o 16:30, bez ciebie (cron/launchd)</li><li>zawsze tak samo, zapisane w pliku</li><li>tylko narzędzia, które dałeś (sandbox)</li><li>wynik wpięty gdzie chcesz: Slack, plik, n8n</li></ul></div>
+    </div>
+    <div class="dgm reveal">
+      <div class="dgm-t">Co Agent SDK robi z tą pętlą</div>
+      <div class="cyc-flow">
+        <div class="cyc-box"><b>Claude Code</b><span>ta sama pętla, ale Ty siedzisz przy klawiaturze</span></div>
+        <div class="cyc-arr">→</div>
+        <div class="cyc-box act"><b>Agent SDK</b><span>wyjmuje pętlę z czatu i zamyka ją w programie</span></div>
+        <div class="cyc-arr">→</div>
+        <div class="cyc-box act"><b>Gotowy agent</b><span>działa sam o wyznaczonej porze, tylko na narzędziach które dałeś, wynik leci gdzie chcesz (Slack, plik)</span></div>
+      </div>
+    </div>
+    <div class="loop-back reveal" style="margin-top:20px"><span class="cyc">→</span><p><b>Claude Code to ty za kierownicą, agent jako pilot.</b> SDK to stała trasa, którą samochód przejeżdża sam codziennie, bez ciebie w środku. Ten sam silnik, inny sposób wdrożenia.</p></div>
+  </div>
+</section>
+
+<section id="mcp">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">08 · co dopięliśmy dzisiaj</div>
+      <h2 class="sec-title">MCP: gotowe narzędzia, które podpinasz do agenta</h2>
+      <p class="sec-intro">MCP (Model Context Protocol) to sposób, żeby podłączyć do Claude zewnętrzne narzędzie albo dane, z których od razu zacznie korzystać. Traktuj to jak wtyczki: dokładasz tylko te, których potrzebujesz. Oto, co podpięliśmy przy dzisiejszej robocie:</p>
+    </div>
+    <div class="terms reveal">
+      <div class="term"><span class="m">prędkość strony</span><br><b>chrome-devtools</b><p>Uruchamia prawdziwą przeglądarkę Chrome i mierzy stronę tak, jak widzi ją użytkownik. Odpala audyt Google Lighthouse (ocena wydajności, SEO, dostępności i dobrych praktyk w skali 0-100), sprawdza kluczowe wskaźniki ładowania i pokazuje, co dokładnie spowalnia stronę. Odpowiada na pytanie: czy ładuje się szybko i czy Google nie będzie się czepiał.</p></div>
+      <div class="term"><span class="m">aktualne dokumentacje</span><br><b>Context7</b><p>Podsuwa Claude świeżą dokumentację biblioteki, i to dokładnie dla tej wersji, której używasz (Next, Playwright, WordPress i setki innych). Dzięki temu agent nie pisze przestarzałego kodu z pamięci, bo przy nowszych wersjach model potrafi zmyślać.</p></div>
+      <div class="term"><span class="m">sterowanie przeglądarką</span><br><b>Playwright</b><p>Pozwala Claude realnie sterować przeglądarką: naprawdę klikać, wypełniać formularze i robić zrzuty ekranu, bez ręcznego pisania testów. To on jest silnikiem naszego testera stron, który wchodzi na stronę i sam ją przeklikuje.</p></div>
+      <div class="term"><span class="m">wideo na tekst</span><br><b>yt-dlp + ffmpeg</b><p>Zamienia nagrania wideo na tekst i pojedyncze klatki obrazu. Przydaje się, gdy trzeba szybko przejść przez dużo materiału i wyciągnąć z niego konkrety.</p></div>
+      <div class="term"><span class="m">audyt techniczny</span><br><b>Screaming Frog</b><p>Przechodzi całą stronę po kolei, adres po adresie, i wypisuje problemy techniczne: błędy, braki w indeksowaniu, puste opisy meta, złe linkowanie wewnętrzne. Do audytu dowolnego serwisu.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="skille">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">09 · jak robimy ładnie</div>
+      <h2 class="sec-title">Skille do web devu: żeby strony wyglądały dobrze, a kod się trzymał</h2>
+      <p class="sec-intro">Skill to gotowy zestaw zasad, który Claude wczytuje i stosuje za każdym razem tak samo. Kilka mamy włączonych na stałe przy każdej stronie. To one pilnują, żeby efekt nie wyglądał jak zrobiony na szybko przez AI.</p>
+    </div>
+    <div class="terms reveal">
+      <div class="term"><span class="m">wygląd</span><br><b>impeccable</b><p>Sprząta interfejs: typografia, odstępy, kontrast, wyrównanie. Pilnuje, żeby front nie wyglądał jak generyczny, wygenerowany przez AI, tylko jak zrobiony przez człowieka z gustem.</p></div>
+      <div class="term"><span class="m">smak wizualny</span><br><b>frontend-design + emil-design-eng</b><p>Uczą Claude dobrego smaku: kiedy dać animację, jak zbudować rytm i hierarchię, jak nie wrzucać trzech identycznych kafelków w rzędzie. Ładnie zamiast „byle działało”.</p></div>
+      <div class="term"><span class="m">bez tandety</span><br><b>design-taste-frontend</b><p>Konkretne zasady, czego NIE robić: żadnych fioletowych gradientów, generycznych fontów, przewidywalnych układów. Wymusza wyróżniający się, przemyślany wygląd.</p></div>
+      <div class="term"><span class="m">twarda kontrola kodu</span><br><b>grill-me / grill-me-codex</b><p>„Grilluje” kod jak wredny senior: wytyka typy, przypadki brzegowe i brakujące testy. Ostrzejsza kontrola niż zwykłe dopisywanie kodu, wyłapuje to, co inaczej wybuchłoby później.</p></div>
+      <div class="term"><span class="m">prostota kodu</span><br><b>karpathy-guidelines</b><p>Zasady Andreja Karpathy'ego: mniej kodu, mniej zbędnej złożoności, tylko to, co potrzebne. Żeby projekt dało się później utrzymać, a nie tonąć w nadmiarze.</p></div>
+      <div class="term"><span class="m">aktualne dokumentacje</span><br><b>context7</b><p>Podsuwa świeżą dokumentację biblioteki, zanim Claude napisze kod. Bez tego model pisze z pamięci, która przy nowszych wersjach po prostu kłamie.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="predkosc">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">10 · prędkość</div>
+      <h2 class="sec-title">Jak agent sprawdza prędkość strony</h2>
+      <p class="sec-intro">Osobna warstwa odbioru: nie „czy ładnie wygląda”, tylko „czy szybko się ładuje i czy Google nie będzie marudził”. Napędza ją chrome-devtools MCP razem z Lighthouse.</p>
+    </div>
+    <p class="blk">Silnik to <strong>prawdziwy Chrome bez okna (headless)</strong>, sterowany protokołem DevTools, tym samym, którego używasz naciskając F12. Agent niczego nie zgaduje: realnie ładuje stronę tak jak przeglądarka użytkownika i mierzy, co się dzieje.</p>
+    <div class="blocks reveal">
+      <div class="block"><div class="num">1</div><div><h4>Wchodzi na stronę</h4><p>Otwiera adres w kontrolowanym Chrome i czeka aż się w pełni załaduje, łącznie ze skryptami i obrazami.</p></div></div>
+      <div class="block"><div class="num">2</div><div><h4>Odpala Lighthouse</h4><p>Audyt Google: ładuje stronę tak, jakby robił to prawdziwy użytkownik na typowym telefonie i łączu, i mierzy każdy etap.</p></div></div>
+      <div class="block"><div class="num">3</div><div><h4>Zbiera ślad wydajności</h4><p>Dokładny zapis ładowania: co się ładuje, kiedy i jak długo. Widać który skrypt, font albo obraz blokuje wyświetlenie.</p></div></div>
+      <div class="block"><div class="num">4</div><div><h4>Zwraca 4 oceny plus konkrety</h4><p>Wydajność, Dostępność, SEO i Dobre praktyki w skali 0-100, a do tego listę „to i to spowalnia stronę, popraw w ten sposób”.</p></div></div>
+    </div>
+    <p class="blk"><strong>Co konkretnie mierzy (Core Web Vitals):</strong></p>
+    <div class="terms reveal">
+      <div class="term"><span class="m">ładowanie</span><br><b>LCP</b><p>Largest Contentful Paint - kiedy pojawia się największy element strony, czyli „kiedy wygląda na gotową”. Cel: poniżej 2,5 sekundy.</p></div>
+      <div class="term"><span class="m">stabilność</span><br><b>CLS</b><p>Cumulative Layout Shift - jak bardzo treść skacze podczas ładowania. To ten moment, gdy chcesz kliknąć, a coś się przesuwa. Cel: poniżej 0,1.</p></div>
+      <div class="term"><span class="m">reakcja</span><br><b>INP</b><p>Interaction to Next Paint - jak szybko strona odpowiada na kliknięcie. Cel: poniżej 200 ms.</p></div>
+      <div class="term"><span class="m">dlaczego to ważne</span><br><b>Ranking Google</b><p>Core Web Vitals to realny czynnik rankingowy. Wolna strona to gorsze pozycje w Google i użytkownicy, którzy uciekają przed załadowaniem.</p></div>
+    </div>
+    <p class="blk">Efekt dla nas: zamiast ogólnego „strona jest wolna” dostajesz <strong>konkret co poprawić</strong>. Tę warstwę dołożymy do testera QA, żeby przed oddaniem klientowi mieć w jednym raporcie funkcjonalność, wygląd i prędkość naraz.</p>
+  </div>
+</section>
+
+<section id="nasze">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">11 · u nas w robocie</div>
+      <h2 class="sec-title">Trzy agenty, które już u nas działają</h2>
+      <p class="sec-intro">Te same pięć klocków, trzy różne zadania. Wszystkie działają na Agent SDK.</p>
+    </div>
+    <div class="agents reveal">
+      <div class="agent">
+        <span class="tag">codziennie · 16:30</span>
+        <h3>Raport dnia</h3>
+        <p class="role">Sam o 16:30 składa raport zrobionej roboty, gotowy do wklejenia na Slacka.</p>
+        <div class="aflow"><span>git, worklogi, sesje</span><i>→</i><span>składa i porządkuje</span><i>→</i><span>gotowy raport</span></div>
+        <ul><li>czyta git, dzienniki pracy, sesje Claude i ręczne dopiski</li><li>układa osobno dla każdego klienta</li><li>łapie robotę bez zapisu w gicie, prosto z panelu WordPressa</li></ul>
+      </div>
+      <div class="agent">
+        <span class="tag">na żądanie · prędkość</span>
+        <h3>Badanie prędkości</h3>
+        <p class="role">Sprawdza, jak szybko ładuje się strona i co ją spowalnia, zanim Google zdąży się przyczepić.</p>
+        <div class="aflow"><span>otwiera stronę</span><i>→</i><span>mierzy ładowanie</span><i>→</i><span>lista co poprawić</span></div>
+        <ul><li>prawdziwy Chrome plus audyt Lighthouse</li><li>oceny 0-100 i kluczowe wskaźniki ładowania</li><li>szczegóły w sekcji „Prędkość” wyżej</li></ul>
+      </div>
+      <div class="agent new">
+        <span class="tag">nowy · przed oddaniem</span>
+        <h3>Tester strony</h3>
+        <p class="role">Zanim oddasz stronę klientowi, przeklikuje ją całą i ogląda okiem, czy nic nie jest zepsute albo brzydkie.</p>
+        <div class="aflow"><span>klika i ogląda</span><i>→</i><span>znajduje błędy</span><i>→</i><span>raport wg wagi</span></div>
+        <ul><li>Playwright plus wzrok agenta (widzi zrzuty)</li><li>klikanie, konsola, nachodzenie, dziwne teksty</li><li>tylko czyta, niczego nie zmienia</li></ul>
+      </div>
+    </div>
+    <div class="find reveal">
+      <div class="find-h">Tester strony na żywo: co znalazł na laser-lab.pl</div>
+      <div class="find-row"><span class="sev k">krytyczne</span><p><b>Martwe przyciski w banerze cookie</b> - „Odrzuć wszystkie” i „Pokaż szczegóły” nie reagują na kliknięcie. Blokuje korzystanie ze strony i łamie RODO. Agent kliknął każdy element i podał który jest martwy.</p></div>
+      <div class="find-row"><span class="sev k">krytyczne</span><p><b>3 zepsute obrazy</b> (z dokładnymi nazwami plików) i <b>górna sekcja zasłonięta oknem cookie bez przyciemnienia tła</b> - pierwsze wrażenie strony zepsute.</p></div>
+      <div class="find-row"><span class="sev p">do poprawy</span><p><b>„Odrzuć wszystkie” niewidoczny na mobile</b> (biały na białym), pływający czat nachodzi na treść, 12 z 17 obrazów bez alt.</p></div>
+      <div class="find-row"><span class="sev d">drobne</span><p><b>Logo za małe względem nawigacji</b>, żółty przycisk „Umów Wizytę” prawdopodobnie poniżej kontrastu WCAG. Agent zobaczył to na zrzutach.</p></div>
+    </div>
+    <div class="find reveal" style="margin-top:16px">
+      <div class="find-h">...i na naszym własnym netim.pl (7 poważnych błędów)</div>
+      <div class="find-row"><span class="sev k">krytyczne</span><p><b>Formularze bez działającego reCAPTCHA</b> („grecaptcha is not defined”) plus <b>3× błąd JS</b> („Cannot read properties of null”) wywalający inicjalizację modułów. Realne błędy na naszej stronie.</p></div>
+      <div class="find-row"><span class="sev k">krytyczne</span><p><b>Mobile: strona przewija się w bok i ucięty nagłówek u góry</b>, baner cookie zasłania ekran z <b>7 martwymi kliknięciami</b> (kliknął każdy i podał które nie reagują).</p></div>
+      <div class="find-row"><span class="sev p">do poprawy</span><p><b>Karta „All Tax” w realizacjach bez 4. liczby</b> (układ się sypie), ucięte opinie, twarze u góry ucięte, 17 obrazów bez alt.</p></div>
+      <div class="find-row"><span class="sev d">drobne</span><p><b>Dwa loga NETIM naraz na mobile</b>, zakładka „About” po angielsku wśród polskich, przycisk z ostrym rogiem i niewidoczną obwódką.</p></div>
+    </div>
+    <figure style="margin:18px 0 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)">
+      <img src="assets/raport-qa.png" alt="Raport QA netim.pl" style="width:100%;display:block;border-bottom:1px solid var(--line-soft)">
+      <figcaption style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--grey);padding:12px 18px">Prawdziwy raport testera QA z netim.pl - wygenerowany automatycznie, gotowy do wysłania.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="prompt">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">12 · jak promptować</div>
+      <h2 class="sec-title">Jak pisać polecenia, żeby dostać lepsze wyniki: 6 nawyków</h2>
+      <p class="sec-intro">Im nowszy model, tym bardziej przeszkadza mu stary styl: piętrzenie reguł i „myśl krok po kroku”. Sześć nawyków, każdy to jedno zdanie do wklejenia. Pięć działa na każdym modelu, jeden dotyczy najnowszych. Kliknij, żeby rozwinąć.</p>
+    </div>
+    <div class="tricks reveal">
+      <div class="tcol">
+        <h4><span class="b">nawyki 1-3</span> Ustaw kierunek</h4>
+        <div class="tacc">
+          <details class="trick"><summary>1 · Daj kontekst, nie tylko kroki <span class="pm">każdy model</span></summary><div class="d">Powiedz cel i dla kogo pracujesz, a model sam dobierze poziom szczegółu. Zasypywanie krokami odbiera mu to.<div class="paste">„Robię [większe zadanie] dla [odbiorca]. Potrzebują [co ma dać efekt]. Mając to na uwadze, [twoja prośba].”</div></div></details>
+          <details class="trick"><summary>2 · Powiedz czego NIE robić <span class="pm">każdy model</span></summary><div class="d">Zdanie ratujące zaczyna się od „nie”. Powstrzymuje model przed samowolnym poprawianiem i kasowaniem.<div class="paste">„Gdy opisuję problem albo pytam, efektem ma być twoja ocena. Zgłoś co znalazłeś i zatrzymaj się. Nie naprawiaj, nie edytuj, nie usuwaj niczego, póki nie powiem: jedź. Rób najprostszą rzecz, która działa, bez sprzątania o które nie prosiłem.”</div></div></details>
+          <details class="trick"><summary>3 · Pozwól działać, gdy ma dość informacji <span class="pm">każdy model</span></summary><div class="d">Niekończące się rozważanie opcji nie jest lepsze, model potrafi kręcić się minutami. Daj mu zielone światło.<div class="paste">„Gdy masz dość informacji, żeby działać, działaj. Nie wyprowadzaj od nowa tego, co już ustaliliśmy, ani nie opisuj opcji, których nie wybierzesz. Jeśli ważysz wybór, daj rekomendację, nie wyczerpujący przegląd.”</div></div></details>
+        </div>
+      </div>
+      <div class="tcol">
+        <h4><span class="b">nawyki 4-6</span> Wymuś jakość i zwięzłość</h4>
+        <div class="tacc">
+          <details class="trick"><summary>4 · Każ udowodnić, nie zadeklarować <span class="pm">każdy model</span></summary><div class="d">Wg testów Anthropic to jedno zdanie prawie wyeliminowało zmyślone raporty „zrobione, działa”.<div class="paste">„Zanim powiesz, że coś jest zrobione, wskaż wynik, który to potwierdza. Raportuj tylko robotę, na którą masz dowód. Jeśli czegoś nie zweryfikowałeś, powiedz to wprost, zamiast zgadywać.”</div></div></details>
+          <details class="trick"><summary>5 · Przestań kazać „pokaż tok rozumowania” <span class="pm pf">najnowsze modele</span></summary><div class="d">Jedyny nawyk specyficzny dla najnowszych modeli i najważniejszy. Stałe „wyjaśnij krok po kroku” w system prompcie potrafi pogorszyć wynik, a nawet po cichu przerzucić zadanie na słabszy model zapasowy (dostajesz gorszą odpowiedź, nie wiedząc, że się przełączyło). Usuń tę linię. Chcesz zobaczyć myślenie: czytaj blok thinking, nie każ mu go opowiadać.</div></details>
+          <details class="trick"><summary>6 · Mów mniej, nie więcej <span class="pm">każdy model</span></summary><div class="d">Krótka instrukcja bywa lepsza niż rozpisane wszystkie reguły. Recykling zeszłorocznych, przeładowanych promptów potrafi aktywnie zaszkodzić.<div class="paste">„Zacznij od efektu. Trzymaj prosto i przerywaj tylko wtedy, gdy praca naprawdę mnie potrzebuje.”</div></div></details>
+        </div>
+      </div>
+    </div>
+    <p class="blk">Zauważ, że połowa tego to nasze własne zasady z CLAUDE.md (działaj gdy wiesz, udowodnij zanim powiesz „gotowe”, mów zwięźle). To nie moda, to jak dziś wygląda dobra współpraca z mocnym modelem.</p>
+  </div>
+</section>
+
+<section id="mem">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">13 · na luzie</div>
+      <h2 class="sec-title">Agent zrobi robotę, ale nie wymyśli jej za ciebie</h2>
+      <p class="sec-intro">Cel i pomysł nadal przynosisz ty. „Zrób ze mnie milionera, zrób appkę, tylko prościej” nie zadziała, choćby agent był najlepszy.</p>
+    </div>
+    <div class="meme reveal"><iframe class="tt-embed" src="https://www.tiktok.com/embed/v2/7648523082923101471" allow="encrypted-media; fullscreen" scrolling="no" title="TikTok"></iframe></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="signature reveal">Najpierw tricki, potem agenci. <span class="hl">Ten sam szkielet, coraz większa dźwignia.</span></div>
+    <div class="foot-grid reveal"><img src="assets/netim_logo_blue.png" alt="Netim"><span class="b">Agent-Lab</span><span>Claude Code + Agent SDK</span><span>09.07.2026</span></div>
+  </div>
+</footer>
+
+</body>
+</html>
