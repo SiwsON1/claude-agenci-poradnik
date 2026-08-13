@@ -553,24 +553,26 @@
     <div class="sec-head reveal">
       <div class="sec-no">07 · nadzór</div>
       <h2 class="sec-title">Agent pilnuje agenta</h2>
-      <p class="sec-intro">W <code>/goal</code> kontroler sprawdza pracownika po każdej turze. Ale ten sam pomysł działa też szerzej: osobny agent nadzorca, który cyklicznie zagląda wykonawcy przez ramię.</p>
+      <p class="sec-intro">W <code>/goal</code> jedna rola robi, a druga sprawdza każdy etap. Ten sam pomysł działa też w większej skali: osobny agent, który regularnie kontroluje pracę drugiego.</p>
     </div>
-    <p class="blk">Scenka z naszej pracy: Codex dostaje długą robotę, na przykład przepisanie sekcji strony. Claude dostaje pętlę: co 30 minut sprawdź, co zrobił Codex, czy nie utknął i czy nie odjechał od briefu. Gdy coś jest nie tak, poprawia brief i zawraca wykonawcę na kurs.</p>
+    <p class="blk">Przykład: Codex dostaje duże zadanie, na przykład przepisanie kilku podstron. Claude co 30 minut sprawdza efekty jego pracy: czy wszystko jest zgodne z wytycznymi i czy Codex się gdzieś nie zaciął. Jeśli coś poszło nie tak, Claude poprawia polecenie i Codex wraca do właściwej wersji.</p>
+    <p class="blk" style="margin-top:18px"><strong>JAK TO URUCHOMIĆ?</strong></p>
+    <p class="blk">Są dwa sposoby i oba działają. <strong>Dwa okna terminala:</strong> w pierwszym pracuje Codex, w drugim Claude Code. To niezależne programy, ale działają na tym samym folderze projektu, więc Claude widzi na bieżąco wszystkie pliki, które zmienia Codex, i co pół godziny ocenia efekt. <strong>Jedno okno:</strong> Claude potrafi sam uruchomić Codexa jako swojego pomocnika, zlecić mu zadanie i sprawdzać jego wyniki w tej samej sesji. Wtedy Ty rozmawiasz tylko z Claude'em, a on zarządza całą resztą. Wersja z dwoma oknami daje Ci pełny podgląd obu agentów, wersja z jednym oknem wymaga najmniej uwagi.</p>
     <p class="blk"><strong>Kto ma co: cel czy pętla?</strong></p>
     <div class="terms reveal">
-      <div class="term-card"><span class="m">WYKONAWCA</span><br><b>Dostaje <code>/goal</code>, czyli metę</b><p>Robi robotę aż do skończenia. Nie wraca co pół godziny, nie czeka na nikogo: cel ciągnie go do przodu, a on sam sprawdza po każdej turze, czy meta jest osiągnięta.</p></div>
-      <div class="term-card"><span class="m">NADZORCA</span><br><b>Dostaje <code>/loop</code>, czyli pętlę</b><p>Nie ma własnej mety. Ma wracać co 30 minut, porównać wynik z briefem i zareagować: doprecyzować polecenie, zawrócić wykonawcę na kurs albo dać znać Tobie.</p></div>
+      <div class="term-card"><span class="m">WYKONAWCA</span><br><b>Dostaje <code>/goal</code>, czyli cel do osiągnięcia</b><p>Pracuje bez przerwy, aż skończy całe zadanie. Po każdym etapie sam sprawdza, czy warunek końca jest już spełniony.</p></div>
+      <div class="term-card"><span class="m">NADZORCA</span><br><b>Dostaje <code>/loop</code>, czyli powtarzane sprawdzanie</b><p>Co 30 minut zagląda w pliki projektu i porównuje efekt z wytycznymi. Jeśli coś się nie zgadza, poprawia polecenie dla Codexa albo daje znać Tobie.</p></div>
     </div>
-    <div class="loop-back reveal"><span class="cyc">→</span><p><b>A czemu nie na odwrót?</b> Gdyby nadzorca dostał <code>/goal</code>, nie wiedziałby, kiedy zaglądać: cel nie mówi nic o rytmie. Gdyby wykonawca dostał <code>/loop</code>, kręciłby się w kółko co 30 minut zamiast dojechać do mety. Cel ciągnie robotę, pętla pilnuje rytmu.</p></div>
+    <div class="loop-back reveal"><span class="cyc">→</span><p><b>A czemu nie na odwrót?</b> Cel mówi, co ma być zrobione, ale nie mówi, jak często sprawdzać postępy. Pętla wyznacza rytm sprawdzania, ale sama niczego nie kończy. Dlatego wykonawca dostaje cel, a nadzorca pętlę.</p></div>
     <p class="blk" style="margin-top:18px"><strong>Ustaw to u siebie: 3 kroki</strong></p>
     <div class="blocks reveal" style="margin-top:18px">
       <div class="block">
         <div class="num">1</div>
         <div>
-          <h4>Daj wykonawcy metę, nie listę kroków</h4>
+          <h4>Otwórz pierwsze okno i uruchom Codexa</h4>
           <div class="term term-sm">
             <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · OKNO 1 · CODEX</span></div>
-            <div class="term-line"><span class="u">&gt;</span> /goal przepisz 5 sekcji strony według briefu z pliku brief.md. Meta: wszystkie sekcje zgodne z makietą i bez błędów w konsoli</div>
+            <div class="term-line"><span class="u">&gt;</span> /goal przepisz 5 sekcji strony według briefu z pliku brief.md. Zadanie jest skończone, gdy wszystkie sekcje są zgodne z makietą i nie ma błędów w konsoli</div>
             <div class="term-line"><span class="a">plan:</span> czytam brief, potem sekcja po sekcji</div>
           </div>
         </div>
@@ -578,52 +580,52 @@
       <div class="block">
         <div class="num">2</div>
         <div>
-          <h4>Daj nadzorcy pętlę i konkretne pytania</h4>
+          <h4>Otwórz drugie okno i uruchom Claude Code</h4>
           <div class="term term-sm">
             <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · OKNO 2 · CLAUDE</span></div>
-            <div class="term-line"><span class="u">&gt;</span> /loop 30m zajrzyj do Codexa: porównaj wynik z brief.md, wypisz co odbiega, w razie potrzeby doprecyzuj polecenie i zawróć go na kurs</div>
-            <div class="term-line"><span class="i">10:00</span> sekcje 1-2 zgodne z briefem, jadę dalej</div>
+            <div class="term-line"><span class="u">&gt;</span> /loop 30m sprawdź postępy Codexa: porównaj jego pracę z plikiem brief.md, wypisz różnice, a jeśli trzeba, popraw polecenie</div>
+            <div class="term-line"><span class="i">10:00</span> sekcje 1 i 2 zgodne z briefem, sprawdzam znowu za pół godziny</div>
           </div>
         </div>
       </div>
       <div class="block">
         <div class="num">3</div>
         <div>
-          <h4>Reaguj tylko, gdy nadzorca Cię zawoła</h4>
+          <h4>Zajmij się swoimi sprawami</h4>
           <div class="term term-sm">
             <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · OKNO 2 · CLAUDE</span></div>
-            <div class="term-line"><span class="i">10:30</span> Codex zmienił kolory poza briefem, doprecyzowałem polecenie</div>
-            <div class="term-line"><span class="i">11:00</span> wrócił na kurs, 5 z 5 sekcji gotowe. Meta osiągnięta, kończę pętlę</div>
+            <div class="term-line"><span class="i">10:30</span> Codex zmienił kolory niezgodnie z briefem, poprawiłem polecenie</div>
+            <div class="term-line"><span class="i">11:00</span> wszystko zgodne z briefem, 5 z 5 sekcji gotowych. Kończę pętlę</div>
           </div>
-          <p>Nadzorca kończy pętlę, gdy meta wykonawcy jest osiągnięta. Ty w tym czasie robisz swoje.</p>
+          <p>Claude sam zakończy pętlę, gdy zadanie Codexa będzie skończone. Odezwie się tylko wtedy, gdy coś będzie wymagało Twojej decyzji.</p>
         </div>
       </div>
     </div>
     <div class="term reveal">
       <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · VS CODE · nadzór</span></div>
-      <div class="term-line"><span class="u">&gt;</span> /loop 30m zajrzyj do Codexa: czy trzyma się briefu i czy nie utknął</div>
-      <div class="term-line"><span class="i">10:00</span> Codex przepisał 2 z 5 sekcji, zgodnie z briefem</div>
-      <div class="term-line"><span class="i">10:30</span> Codex utknął na galerii zdjęć, doprecyzowuję polecenie</div>
-      <div class="term-line"><span class="i">11:00</span> wrócił na kurs, 4 z 5 sekcji gotowe</div>
+      <div class="term-line"><span class="u">&gt;</span> /loop 30m sprawdź postępy Codexa: czy praca jest zgodna z briefem i czy nic się nie zacięło</div>
+      <div class="term-line"><span class="i">10:00</span> Codex przepisał 2 z 5 sekcji, wszystko zgodne z briefem</div>
+      <div class="term-line"><span class="i">10:30</span> Codex zaciął się na galerii zdjęć, poprawiłem polecenie</div>
+      <div class="term-line"><span class="i">11:00</span> znowu idzie do przodu, 4 z 5 sekcji gotowe</div>
     </div>
-    <p class="blk"><strong>Jeden agent ma pętlę</strong> (Claude z <code>/loop</code>), drugi ma cel (Codex z <code>/goal</code>). Pętla pilnuje, cel ciągnie robotę do przodu.</p>
+    <p class="blk"><strong>Jeden agent ma pętlę</strong> (Claude z <code>/loop</code>), drugi ma cel (Codex z <code>/goal</code>). Cel pilnuje efektu końcowego, pętla pilnuje regularnej kontroli.</p>
     <div class="dgm reveal">
       <div class="dgm-t">Jak wygląda nadzór drugiego agenta</div>
       <div class="cyc-flow">
-        <div class="cyc-box act"><b>Claude nadzorca</b><span>trzyma brief, cel i kryteria jakości</span></div>
+        <div class="cyc-box act"><b>Claude nadzorca</b><span>zna wytyczne i cel pracy</span></div>
         <div class="cyc-arr">→</div>
-        <div class="cyc-box"><b>Zagląda co 30 minut</b><span>pyta o postęp, blokery i zgodność z briefem</span></div>
+        <div class="cyc-box"><b>Zagląda co 30 minut</b><span>sprawdza postęp i zgodność z wytycznymi</span></div>
         <div class="cyc-arr">→</div>
-        <div class="cyc-box act"><b>Codex wykonawca</b><span>pisze, edytuje i raportuje wynik</span></div>
+        <div class="cyc-box act"><b>Codex wykonawca</b><span>pisze, poprawia i pokazuje efekt</span></div>
         <div class="cyc-arr">→</div>
-        <div class="cyc-box"><b>Postęp i wynik</b><span>wracają do nadzorcy do oceny</span></div>
+        <div class="cyc-box"><b>Postęp i wynik</b><span>nadzorca ocenia efekt pracy</span></div>
       </div>
-      <div class="cyc-loop"><span class="q">?</span><p><b>Powrót do nadzorcy:</b> jeśli wynik odpływa od briefu, nadzorca doprecyzowuje polecenie i wysyła wykonawcę z powrotem do pracy.</p></div>
+      <div class="cyc-loop"><span class="q">?</span><p><b>Co, jeśli coś się nie zgadza?</b> Nadzorca poprawia polecenie i Codex wraca do pracy z jaśniejszymi wskazówkami.</p></div>
     </div>
     <div class="blocks reveal">
-      <div class="block"><div class="num">1</div><div><h4>Długa robota bez dryfu</h4><p>Nadzorca łapie moment, gdy wykonawca kręci się w kółko albo zaczyna robić rzeczy spoza briefu.</p></div></div>
-      <div class="block"><div class="num">2</div><div><h4>Jeden pisze, drugi recenzuje</h4><p>Każdy większy kawałek kodu przechodzi przez drugiego agenta, zanim trafi do klienta.</p></div></div>
-      <div class="block"><div class="num">3</div><div><h4>Rutyny bez patrzenia w ekran</h4><p>Nadzór można ustawić przez <code>/loop</code> albo harmonogram. Działa też wtedy, gdy nie patrzysz.</p></div></div>
+      <div class="block"><div class="num">1</div><div><h4>Duże zadania pod kontrolą</h4><p>Nadzorca wychwytuje moment, w którym wykonawca utknął albo robi coś, o co nikt nie prosił.</p></div></div>
+      <div class="block"><div class="num">2</div><div><h4>Jeden pisze, drugi sprawdza</h4><p>Każdy większy kawałek kodu przechodzi przez drugiego agenta, zanim trafi do klienta.</p></div></div>
+      <div class="block"><div class="num">3</div><div><h4>Kontrola działa też bez Ciebie</h4><p>Nadzór można ustawić przez <code>/loop</code> albo harmonogram. Działa także wtedy, gdy nie siedzisz przy komputerze.</p></div></div>
     </div>
     <div class="loop-back reveal"><span class="cyc">→</span><p><b>To nie science fiction, tylko <code>/loop</code> plus drugi agent.</b> Wszystko z klocków, które już znasz z tej strony.</p></div>
   </div>
