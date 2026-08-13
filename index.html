@@ -555,13 +555,56 @@
       <h2 class="sec-title">Agent pilnuje agenta</h2>
       <p class="sec-intro">W <code>/goal</code> kontroler sprawdza pracownika po każdej turze. Ale ten sam pomysł działa też szerzej: osobny agent nadzorca, który cyklicznie zagląda wykonawcy przez ramię.</p>
     </div>
-    <p class="blk">Scenka z naszej pracy: Codex dostaje długą robotę, na przykład przepisanie sekcji strony. Claude dostaje pętlę: co 10 minut sprawdź, co zrobił Codex, czy nie utknął i czy nie odjechał od briefu. Gdy coś jest nie tak, poprawia brief i zawraca wykonawcę na kurs.</p>
+    <p class="blk">Scenka z naszej pracy: Codex dostaje długą robotę, na przykład przepisanie sekcji strony. Claude dostaje pętlę: co 30 minut sprawdź, co zrobił Codex, czy nie utknął i czy nie odjechał od briefu. Gdy coś jest nie tak, poprawia brief i zawraca wykonawcę na kurs.</p>
+    <p class="blk"><strong>Kto ma co: cel czy pętla?</strong></p>
+    <div class="terms reveal">
+      <div class="term-card"><span class="m">WYKONAWCA</span><br><b>Dostaje <code>/goal</code>, czyli metę</b><p>Robi robotę aż do skończenia. Nie wraca co pół godziny, nie czeka na nikogo: cel ciągnie go do przodu, a on sam sprawdza po każdej turze, czy meta jest osiągnięta.</p></div>
+      <div class="term-card"><span class="m">NADZORCA</span><br><b>Dostaje <code>/loop</code>, czyli pętlę</b><p>Nie ma własnej mety. Ma wracać co 30 minut, porównać wynik z briefem i zareagować: doprecyzować polecenie, zawrócić wykonawcę na kurs albo dać znać Tobie.</p></div>
+    </div>
+    <div class="loop-back reveal"><span class="cyc">→</span><p><b>A czemu nie na odwrót?</b> Gdyby nadzorca dostał <code>/goal</code>, nie wiedziałby, kiedy zaglądać: cel nie mówi nic o rytmie. Gdyby wykonawca dostał <code>/loop</code>, kręciłby się w kółko co 30 minut zamiast dojechać do mety. Cel ciągnie robotę, pętla pilnuje rytmu.</p></div>
+    <p class="blk" style="margin-top:18px"><strong>Ustaw to u siebie: 3 kroki</strong></p>
+    <div class="blocks reveal" style="margin-top:18px">
+      <div class="block">
+        <div class="num">1</div>
+        <div>
+          <h4>Daj wykonawcy metę, nie listę kroków</h4>
+          <div class="term term-sm">
+            <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · OKNO 1 · CODEX</span></div>
+            <div class="term-line"><span class="u">&gt;</span> /goal przepisz 5 sekcji strony według briefu z pliku brief.md. Meta: wszystkie sekcje zgodne z makietą i bez błędów w konsoli</div>
+            <div class="term-line"><span class="a">plan:</span> czytam brief, potem sekcja po sekcji</div>
+          </div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">2</div>
+        <div>
+          <h4>Daj nadzorcy pętlę i konkretne pytania</h4>
+          <div class="term term-sm">
+            <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · OKNO 2 · CLAUDE</span></div>
+            <div class="term-line"><span class="u">&gt;</span> /loop 30m zajrzyj do Codexa: porównaj wynik z brief.md, wypisz co odbiega, w razie potrzeby doprecyzuj polecenie i zawróć go na kurs</div>
+            <div class="term-line"><span class="i">10:00</span> sekcje 1-2 zgodne z briefem, jadę dalej</div>
+          </div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">3</div>
+        <div>
+          <h4>Reaguj tylko, gdy nadzorca Cię zawoła</h4>
+          <div class="term term-sm">
+            <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · OKNO 2 · CLAUDE</span></div>
+            <div class="term-line"><span class="i">10:30</span> Codex zmienił kolory poza briefem, doprecyzowałem polecenie</div>
+            <div class="term-line"><span class="i">11:00</span> wrócił na kurs, 5 z 5 sekcji gotowe. Meta osiągnięta, kończę pętlę</div>
+          </div>
+          <p>Nadzorca kończy pętlę, gdy meta wykonawcy jest osiągnięta. Ty w tym czasie robisz swoje.</p>
+        </div>
+      </div>
+    </div>
     <div class="term reveal">
       <div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · VS CODE · nadzór</span></div>
-      <div class="term-line"><span class="u">&gt;</span> /loop 10m zajrzyj do Codexa: czy trzyma się briefu i czy nie utknął</div>
+      <div class="term-line"><span class="u">&gt;</span> /loop 30m zajrzyj do Codexa: czy trzyma się briefu i czy nie utknął</div>
       <div class="term-line"><span class="i">10:00</span> Codex przepisał 2 z 5 sekcji, zgodnie z briefem</div>
-      <div class="term-line"><span class="i">10:10</span> Codex utknął na galerii zdjęć, doprecyzowuję polecenie</div>
-      <div class="term-line"><span class="i">10:20</span> wrócił na kurs, 4 z 5 sekcji gotowe</div>
+      <div class="term-line"><span class="i">10:30</span> Codex utknął na galerii zdjęć, doprecyzowuję polecenie</div>
+      <div class="term-line"><span class="i">11:00</span> wrócił na kurs, 4 z 5 sekcji gotowe</div>
     </div>
     <p class="blk"><strong>Jeden agent ma pętlę</strong> (Claude z <code>/loop</code>), drugi ma cel (Codex z <code>/goal</code>). Pętla pilnuje, cel ciągnie robotę do przodu.</p>
     <div class="dgm reveal">
@@ -569,7 +612,7 @@
       <div class="cyc-flow">
         <div class="cyc-box act"><b>Claude nadzorca</b><span>trzyma brief, cel i kryteria jakości</span></div>
         <div class="cyc-arr">→</div>
-        <div class="cyc-box"><b>Zagląda co 10 minut</b><span>pyta o postęp, blokery i zgodność z briefem</span></div>
+        <div class="cyc-box"><b>Zagląda co 30 minut</b><span>pyta o postęp, blokery i zgodność z briefem</span></div>
         <div class="cyc-arr">→</div>
         <div class="cyc-box act"><b>Codex wykonawca</b><span>pisze, edytuje i raportuje wynik</span></div>
         <div class="cyc-arr">→</div>
