@@ -30,6 +30,12 @@
   .reveal{ animation:rise .55s var(--ease-out) both; }
   @keyframes rise{ from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
 
+  .reading-progress{ display:none; }
+  @supports (animation-timeline: scroll()){
+    .reading-progress{ display:block; position:fixed; inset:0 0 auto; z-index:4; height:3px; background:var(--mint); pointer-events:none; transform:scaleX(0); transform-origin:left; animation:reading-progress linear; animation-timeline:scroll(); }
+    @keyframes reading-progress{ to{ transform:scaleX(1); } }
+  }
+
   .topbar{ border-bottom:1px solid var(--line); background:var(--white); position:relative; z-index:5; }
   .topbar .wrap{ display:flex; align-items:center; justify-content:space-between; padding:18px 28px; }
   .brand-lockup{ display:inline-flex; align-items:center; gap:10px; color:var(--granat); text-decoration:none; }
@@ -45,10 +51,32 @@
   h1{ color:var(--white); font-size:clamp(2.4rem,6vw,4.4rem); line-height:1.03; letter-spacing:-.04em; margin:.5em 0 .35em; max-width:17ch; }
   h1 .hl{ color:var(--mint); }
   .lede{ font-size:clamp(1.05rem,1.6vw,1.25rem); color:rgba(255,255,255,.82); max-width:52ch; }
-  .toc{ display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; }
+  .toc-details{ margin-top:28px; }
+  .toc-details > summary{ display:flex; align-items:center; justify-content:space-between; gap:12px; list-style:none; cursor:pointer; padding:12px 14px; border:1px solid rgba(255,255,255,.22); border-radius:12px; color:var(--white); background:rgba(255,255,255,.06); font:700 13px/1.2 "Montserrat",system-ui,sans-serif; transition:transform 180ms var(--ease-out), background-color 180ms var(--ease-out), border-color 180ms var(--ease-out), color 180ms var(--ease-out); }
+  .toc-details > summary::-webkit-details-marker{ display:none; }
+  .toc-details > summary::after{ content:"+"; flex:0 0 auto; color:var(--mint); font:500 20px/1 "JetBrains Mono",monospace; }
+  .toc-details[open] > summary::after{ content:"\00d7"; }
+  .toc-details > summary:hover{ background:rgba(255,255,255,.1); border-color:rgba(128,223,160,.55); }
+  .toc-details > summary:focus-visible{ color:var(--white); border-color:var(--sky); }
+  .toc-details > summary:active{ transform:scale(.985); background:rgba(255,255,255,.04); }
+  .toc-count{ margin-left:auto; color:rgba(255,255,255,.62); font:500 11px/1 "JetBrains Mono",monospace; }
+  .toc{ display:grid; gap:20px; margin-top:16px; }
+  .toc-group{ display:grid; gap:8px; min-width:0; }
+  .toc-label{ font-family:"JetBrains Mono",monospace; font-size:10.5px; line-height:1.2; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.52); }
+  .toc-links{ display:flex; flex-wrap:wrap; gap:8px; }
   .toc a{ font-family:"JetBrains Mono",monospace; font-size:12px; text-decoration:none; color:rgba(255,255,255,.88); background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.22); padding:7px 13px; border-radius:999px; transition:transform 200ms var(--ease-out), background-color 200ms var(--ease-out), border-color 200ms var(--ease-out); }
   .toc a:hover{ transform:translateY(-1px); background:rgba(255,255,255,.08); border-color:rgba(128,223,160,.55); color:var(--white); }
   .toc a:active{ transform:translateY(0) scale(.97); }
+  @media(min-width:720px){
+    .toc-details > summary{ display:none; }
+    .toc{ margin-top:0; }
+  }
+  @media(min-width:900px){
+    .toc{ grid-template-columns:1fr 1fr; align-items:start; gap:10px 24px; }
+    .toc-group{ gap:5px; }
+    .toc-links{ gap:6px; }
+    .toc a{ padding:4px 8px; }
+  }
 
   section{ padding:9vh 0; border-bottom:1px solid var(--line); background:var(--white); }
   section:nth-of-type(even){ background:var(--bg-paper); }
@@ -149,6 +177,10 @@
   .cell h3{ font-size:1.25rem; margin:8px 0; } .cell.hot h3{ color:var(--blue); }
   .cell p{ color:var(--ink-soft); font-size:.95rem; }
   .cell .verdict{ margin-top:14px; padding-top:12px; border-top:1px solid var(--line); font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--mute); } .cell.hot .verdict{ color:var(--blue); }
+  .start-card{ transition:transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out); }
+  .start-card:hover{ transform:translateY(-3px); box-shadow:var(--card-shadow-strong); }
+  .start-card .lvl{ color:var(--blue); font-size:14px; font-weight:700; line-height:1; letter-spacing:.06em; }
+  @media(min-width:820px){ .start-cards{ grid-template-columns:repeat(3,1fr); } }
 
   /* blocks */
   .block{ display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start; padding:20px 0; border-top:1px solid var(--line); }
@@ -206,6 +238,14 @@
   .term-card b{ color:var(--granat); } .term-card .m{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--blue); background:var(--bg-soft); border-radius:999px; padding:2px 7px; }
   .term-card p{ font-size:.9rem; color:var(--ink-soft); margin-top:4px; }
 
+  .blocks.reveal,.terms.reveal{ animation:none; }
+  .blocks.reveal > .block,.terms.reveal > .term-card{ animation:rise .55s var(--ease-out) both; }
+  .blocks.reveal > :nth-child(2),.terms.reveal > :nth-child(2){ animation-delay:50ms; }
+  .blocks.reveal > :nth-child(3),.terms.reveal > :nth-child(3){ animation-delay:100ms; }
+  .blocks.reveal > :nth-child(4),.terms.reveal > :nth-child(4){ animation-delay:150ms; }
+  .blocks.reveal > :nth-child(5),.terms.reveal > :nth-child(5){ animation-delay:200ms; }
+  .blocks.reveal > :nth-child(n+6),.terms.reveal > :nth-child(n+6){ animation-delay:250ms; }
+
   /* agents */
   .agents{ display:grid; grid-template-columns:1fr; gap:16px; } @media(min-width:820px){ .agents{ grid-template-columns:1fr 1fr 1fr; } }
   .agent{ border:1px solid var(--line); border-radius:var(--r-lg); padding:24px 22px; background:var(--white); box-shadow:var(--card-shadow); }
@@ -254,11 +294,15 @@
   }
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
-    .reveal,.toc a:hover,.term-card:hover{ opacity:1 !important; transform:none !important; }
+    .reading-progress{ display:none !important; }
+    .blocks.reveal > .block,.terms.reveal > .term-card{ animation-delay:0ms !important; }
+    .reveal,.toc a:hover,.toc-details > summary:active,.term-card:hover,.start-card:hover{ opacity:1 !important; transform:none !important; }
   }
 </style>
 </head>
 <body>
+
+<div class="reading-progress" aria-hidden="true"></div>
 
 <div class="topbar"><div class="wrap"><a href="#" class="brand-lockup" aria-label="NETIM Group"><svg viewBox="70 70 290 272" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path fill="currentColor" d="M113.3,238.6l24.8-110v-.4c2.2-10.5,9.9-13.8,14.3-14.8,7.5-1.8,19.3,0,27.9,11.1l68.9,86.3,29.6-23.3-68.9-86.3c-16.1-20.6-38.8-30.3-63-24.5-22,5.2-41,21.6-45.5,43.9l-24.8,110v.4c-3.7,18.1,1.6,37.2,13.5,52.4l26.3,32.3,29.5-23.3-26.3-32.3c-5-6.4-7.7-14.4-6.3-21.5Z"/><path fill="currentColor" d="M312.5,91.7l-29,23.3,24.7,33.3c5,6.4,7.2,14.4,5.8,21.5l-24.3,110v.4c-2.2,10.5-9.9,13.8-14.3,14.8-7.5,1.8-19.4,0-27.9-11.1l-68.5-85.8-29.6,23.3,68.5,85.8c13,16.6,29.1,26.2,48.8,26.2,31.6,0,55.1-23.3,59.7-45.5l24.3-110v-.4c3.7-18.1-1.1-37.2-13-52.4l-25.3-33.3Z"/></svg><span class="brand-word">NETIM<span class="brand-group" aria-hidden="true">GROUP</span></span></a><span class="meta">poradnik wewnętrzny · 09.07.2026</span></div></div>
 
@@ -271,30 +315,31 @@
     <span class="eyebrow">Claude Code + agenci</span>
     <h1><span class="hl">Claude Code</span> i agenci AI: co to jest i jak może nam pomóc</h1>
     <p class="lede">Prosty przewodnik: czym jest Claude Code, jak używać go na co dzień, czym właściwie jest agent AI i jakie trzy agenty już u nas działają, w tym ten, który sprawdza strony przed oddaniem klientowi. Zaczynamy od instalacji od zera i pierwszego uruchomienia.</p>
-    <div class="toc">
-      <a href="#start">01 · Co jest potrzebne</a>
-      <a href="#instalacja">02 · Instalacja</a>
-      <a href="#vscode">03 · Claude Code w VS Code</a>
-      <a href="#pierwsza-sesja">04 · Pierwsza sesja</a>
-      <a href="#przyklady">05 · Proste zadania na start</a>
-      <a href="#klopoty">06 · Typowe potknięcia</a>
-      <a href="#poziomy">07 · Pięć poziomów Claude</a>
-      <a href="#tricki">08 · Wskazówki do pracy</a>
-      <a href="#wtracanie">09 · Wtrącaj się w trakcie</a>
-      <a href="#funkcje">10 · Najważniejsze funkcje</a>
-      <a href="#agent">11 · Co to jest agent</a>
-      <a href="#petla">12 · Pętla i /goal</a>
-      <a href="#nadzor">13 · Agent pilnuje agenta</a>
-      <a href="#czesci">14 · Części agenta</a>
-      <a href="#sdk">15 · Agent SDK</a>
-      <a href="#mcp">16 · Narzędzia MCP</a>
-      <a href="#skille">17 · Skille do web dev</a>
-      <a href="#predkosc">18 · Prędkość strony</a>
-      <a href="#nasze">19 · Nasze agenty</a>
-      <a href="#prompt">20 · Jak promptować</a>
-      <a href="#wideo">21 · Materiały wideo</a>
-      <a href="#mem">22 · Na luzie</a>
-    </div>
+    <details class="toc-details" open>
+      <summary><span>Spis treści</span><span class="toc-count">22 sekcje</span></summary>
+      <nav class="toc" aria-label="Spis treści">
+        <div class="toc-group">
+          <div class="toc-label">Start od zera</div>
+          <div class="toc-links"><a href="#start">01 · Co jest potrzebne</a><a href="#instalacja">02 · Instalacja</a><a href="#vscode">03 · VS Code</a><a href="#pierwsza-sesja">04 · Pierwsza sesja</a><a href="#przyklady">05 · Zadania na start</a><a href="#klopoty">06 · Coś nie działa</a></div>
+        </div>
+        <div class="toc-group">
+          <div class="toc-label">Codzienna praca</div>
+          <div class="toc-links"><a href="#poziomy">07 · Pięć poziomów</a><a href="#tricki">08 · Porady</a><a href="#wtracanie">09 · Wtrącaj się</a><a href="#funkcje">10 · Funkcje</a></div>
+        </div>
+        <div class="toc-group">
+          <div class="toc-label">W środku</div>
+          <div class="toc-links"><a href="#agent">11 · Co to jest agent</a><a href="#petla">12 · Pętla i /goal</a><a href="#nadzor">13 · Nadzór agenta</a><a href="#czesci">14 · Części agenta</a><a href="#sdk">15 · Agent SDK</a></div>
+        </div>
+        <div class="toc-group">
+          <div class="toc-label">Narzędzia i wdrożenia</div>
+          <div class="toc-links"><a href="#mcp">16 · Narzędzia MCP</a><a href="#skille">17 · Skille web dev</a><a href="#predkosc">18 · Prędkość strony</a><a href="#nasze">19 · Nasze agenty</a></div>
+        </div>
+        <div class="toc-group">
+          <div class="toc-label">Na koniec</div>
+          <div class="toc-links"><a href="#prompt">20 · Jak promptować</a><a href="#wideo">21 · Materiały wideo</a><a href="#mem">22 · Na luzie</a></div>
+        </div>
+      </nav>
+    </details>
   </div>
 </header>
 
@@ -305,10 +350,10 @@
       <h2 class="sec-title">Zanim zaczniesz: co jest potrzebne</h2>
       <p class="sec-intro">Claude Code to nie strona internetowa, tylko program, który działa na Twoim komputerze i ma dostęp do plików w jednym folderze, który mu wskażesz. Instalacja zajmuje kilkanaście minut i nie wymaga umiejętności programowania.</p>
     </div>
-    <div class="blocks reveal">
-      <div class="block"><div class="num">1</div><div><h4>Konto</h4><p>Potrzebny jest płatny plan Claude: Pro, Max, Team albo Enterprise. Darmowy plan Claude.ai nie daje dostępu do Claude Code. Możesz też użyć konta w Anthropic Console, rozliczanego za zużycie.</p></div></div>
-      <div class="block"><div class="num">2</div><div><h4>Komputer</h4><p>Potrzebujesz macOS od wersji 13, Windows 10 z aktualizacją 1809 lub nowszy albo Linux. Minimum to 4 GB pamięci i stałe połączenie z internetem.</p></div></div>
-      <div class="block"><div class="num">3</div><div><h4>Piętnaście minut</h4><p>Niczego nie trzeba konfigurować ręcznie. Instalator robi wszystko sam, a logowanie odbywa się przez przeglądarkę.</p></div></div>
+    <div class="three start-cards reveal">
+      <div class="cell start-card"><div class="lvl">01</div><h3>Konto</h3><p>Potrzebny jest płatny plan Claude: Pro, Max, Team albo Enterprise. Darmowy plan Claude.ai nie daje dostępu do Claude Code. Możesz też użyć konta w Anthropic Console, rozliczanego za zużycie.</p></div>
+      <div class="cell start-card"><div class="lvl">02</div><h3>Komputer</h3><p>Potrzebujesz macOS od wersji 13, Windows 10 z aktualizacją 1809 lub nowszy albo Linux. Minimum to 4 GB pamięci i stałe połączenie z internetem.</p></div>
+      <div class="cell start-card"><div class="lvl">03</div><h3>Piętnaście minut</h3><p>Niczego nie trzeba konfigurować ręcznie. Instalator robi wszystko sam, a logowanie odbywa się przez przeglądarkę.</p></div>
     </div>
     <div class="tricks reveal" style="grid-template-columns:1fr; margin-top:24px;">
       <div class="tacc">
@@ -1060,6 +1105,19 @@
 </footer>
 
 <script>
+  const tocDetails = document.querySelector(".toc-details");
+  const tocMedia = window.matchMedia("(max-width: 719px)");
+  const syncTocDetails = function(media){
+    if(tocDetails) tocDetails.open = !media.matches;
+  };
+
+  syncTocDetails(tocMedia);
+  if(typeof tocMedia.addEventListener === "function"){
+    tocMedia.addEventListener("change", syncTocDetails);
+  }else{
+    tocMedia.addListener(syncTocDetails);
+  }
+
   document.addEventListener("click", function(event){
     const btn = event.target.closest(".term-copy");
     if(!btn) return;
