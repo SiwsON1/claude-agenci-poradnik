@@ -6,7 +6,7 @@
 <title>Claude Code i agenci - poradnik Netim</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Montserrat:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Montserrat:ital,wght@0,300..900;1,300..900&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --granat:#050a30; --blue:#1e5e9f; --mint:#80dfa0; --sky:#26a7f0; --deep:#0c4190;
@@ -152,6 +152,7 @@
 
   /* blocks */
   .block{ display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start; padding:20px 0; border-top:1px solid var(--line); }
+  .blocks > *,.block > *,.tricks > *,.tacc > *{ min-width:0; }
   .block:last-child{ border-bottom:1px solid var(--line); }
   @media(min-width:720px){ .block{ grid-template-columns:50px 1fr auto; align-items:center; } }
   .block .num{ font-family:"JetBrains Mono",monospace; font-size:1.15rem; color:var(--blue); width:42px; height:42px; display:grid; place-items:center; border:1px solid var(--line); border-radius:11px; background:var(--white); }
@@ -159,12 +160,16 @@
   .block .where{ font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--mute); background:var(--bg-soft); border:1px solid var(--line); padding:5px 10px; border-radius:999px; white-space:nowrap; justify-self:start; }
 
   /* trace + loop */
-  .term{ margin-top:18px; background:var(--granat); border:1px solid var(--line-d); border-radius:var(--r-md); padding:18px 20px 20px; font-family:"JetBrains Mono",monospace; font-size:12.5px; line-height:1.75; color:#dfe5ff; overflow-x:auto; box-shadow:var(--card-shadow); }
+  .term{ max-width:100%; margin-top:18px; background:var(--granat); border:1px solid var(--line-d); border-radius:var(--r-md); padding:18px 20px 20px; font-family:"JetBrains Mono",monospace; font-size:12.5px; line-height:1.75; color:#dfe5ff; overflow-x:auto; box-shadow:var(--card-shadow); }
   .term-sm{ margin-top:12px; padding:13px 14px 14px; font-size:13px; line-height:1.65; }
   .term-bar{ display:flex; align-items:center; gap:10px; color:#94A0B6; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; white-space:nowrap; }
+  .term-copy{ flex:0 0 auto; margin-left:auto; border:1px solid var(--line-d); border-radius:8px; padding:4px 8px; background:transparent; color:#dfe5ff; font:500 10.5px/1.2 "JetBrains Mono",monospace; text-transform:none; cursor:pointer; transition:color 160ms var(--ease-out), border-color 160ms var(--ease-out), background-color 160ms var(--ease-out), transform 160ms var(--ease-out), opacity 160ms var(--ease-out); }
+  .term-copy:hover{ color:var(--white); border-color:var(--sky); background:rgba(255,255,255,.06); }
+  .term-copy:focus-visible{ color:var(--white); border-color:var(--sky); }
+  .term-copy:active{ transform:scale(.96); opacity:.82; }
   .term-dots{ display:flex; gap:5px; }
   .term-dots i{ width:7px; height:7px; border-radius:50%; background:#62708D; display:block; }
-  .term-title{ color:#B9C3D6; }
+  .term-title{ color:#B9C3D6; min-width:0; overflow:hidden; text-overflow:ellipsis; }
   .term-line{ white-space:nowrap; }
   .term-line b{ color:#fff; }
   .term-line .u,.term-line .c,.term-line .o{ color:var(--mint); }
@@ -244,6 +249,9 @@
     .hero-sygnet{ right:-140px; top:14%; width:430px; opacity:.12; }
     .find-row{ grid-template-columns:1fr; }
   }
+  @media(max-width:719px){
+    .term-sm:has(.term-copy) .term-line{ white-space:pre-wrap; overflow-wrap:anywhere; padding-left:1.25em; text-indent:-1.25em; }
+  }
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
     .reveal,.toc a:hover,.term-card:hover{ opacity:1 !important; transform:none !important; }
@@ -262,32 +270,235 @@
   <div class="wrap reveal">
     <span class="eyebrow">Claude Code + agenci</span>
     <h1><span class="hl">Claude Code</span> i agenci AI: co to jest i jak może nam pomóc</h1>
-    <p class="lede">Prosty przewodnik: czym jest Claude Code, jak używać go na co dzień, czym właściwie jest agent AI i jakie trzy agenty już u nas działają, w tym ten, który sprawdza strony przed oddaniem klientowi.</p>
+    <p class="lede">Prosty przewodnik: czym jest Claude Code, jak używać go na co dzień, czym właściwie jest agent AI i jakie trzy agenty już u nas działają, w tym ten, który sprawdza strony przed oddaniem klientowi. Zaczynamy od instalacji od zera i pierwszego uruchomienia.</p>
     <div class="toc">
-      <a href="#poziomy">1 · Pięć poziomów Claude</a>
-      <a href="#tricki">2 · Wskazówki do pracy</a>
-      <a href="#wtracanie">3 · Wtrącaj się w trakcie</a>
-      <a href="#funkcje">4 · Najważniejsze funkcje</a>
-      <a href="#agent">5 · Co to jest agent</a>
-      <a href="#petla">6 · Pętla i /goal</a>
-      <a href="#nadzor">7 · Agent pilnuje agenta</a>
-      <a href="#czesci">8 · Części agenta</a>
-      <a href="#sdk">9 · Agent SDK</a>
-      <a href="#mcp">10 · Narzędzia MCP</a>
-      <a href="#skille">11 · Skille do web dev</a>
-      <a href="#predkosc">12 · Prędkość strony</a>
-      <a href="#nasze">13 · Nasze agenty</a>
-      <a href="#prompt">14 · Jak promptować</a>
-      <a href="#wideo">15 · Materiały wideo</a>
-      <a href="#mem">16 · Na luzie</a>
+      <a href="#start">01 · Co jest potrzebne</a>
+      <a href="#instalacja">02 · Instalacja</a>
+      <a href="#vscode">03 · Claude Code w VS Code</a>
+      <a href="#pierwsza-sesja">04 · Pierwsza sesja</a>
+      <a href="#przyklady">05 · Proste zadania na start</a>
+      <a href="#klopoty">06 · Typowe potknięcia</a>
+      <a href="#poziomy">07 · Pięć poziomów Claude</a>
+      <a href="#tricki">08 · Wskazówki do pracy</a>
+      <a href="#wtracanie">09 · Wtrącaj się w trakcie</a>
+      <a href="#funkcje">10 · Najważniejsze funkcje</a>
+      <a href="#agent">11 · Co to jest agent</a>
+      <a href="#petla">12 · Pętla i /goal</a>
+      <a href="#nadzor">13 · Agent pilnuje agenta</a>
+      <a href="#czesci">14 · Części agenta</a>
+      <a href="#sdk">15 · Agent SDK</a>
+      <a href="#mcp">16 · Narzędzia MCP</a>
+      <a href="#skille">17 · Skille do web dev</a>
+      <a href="#predkosc">18 · Prędkość strony</a>
+      <a href="#nasze">19 · Nasze agenty</a>
+      <a href="#prompt">20 · Jak promptować</a>
+      <a href="#wideo">21 · Materiały wideo</a>
+      <a href="#mem">22 · Na luzie</a>
     </div>
   </div>
 </header>
 
+<section id="start" class="reveal">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">01 · przygotowanie</div>
+      <h2 class="sec-title">Zanim zaczniesz: co jest potrzebne</h2>
+      <p class="sec-intro">Claude Code to nie strona internetowa, tylko program, który działa na Twoim komputerze i ma dostęp do plików w jednym folderze, który mu wskażesz. Instalacja zajmuje kilkanaście minut i nie wymaga umiejętności programowania.</p>
+    </div>
+    <div class="blocks reveal">
+      <div class="block"><div class="num">1</div><div><h4>Konto</h4><p>Potrzebny jest płatny plan Claude: Pro, Max, Team albo Enterprise. Darmowy plan Claude.ai nie daje dostępu do Claude Code. Możesz też użyć konta w Anthropic Console, rozliczanego za zużycie.</p></div></div>
+      <div class="block"><div class="num">2</div><div><h4>Komputer</h4><p>Potrzebujesz macOS od wersji 13, Windows 10 z aktualizacją 1809 lub nowszy albo Linux. Minimum to 4 GB pamięci i stałe połączenie z internetem.</p></div></div>
+      <div class="block"><div class="num">3</div><div><h4>Piętnaście minut</h4><p>Niczego nie trzeba konfigurować ręcznie. Instalator robi wszystko sam, a logowanie odbywa się przez przeglądarkę.</p></div></div>
+    </div>
+    <div class="tricks reveal" style="grid-template-columns:1fr; margin-top:24px;">
+      <div class="tacc">
+        <details class="trick"><summary>Co to jest terminal</summary><div class="d">Terminal to czarne okno, w którym piszesz polecenia zamiast klikać. Na Macu nazywa się Terminal i znajdziesz go przez Spotlight: naciśnij Cmd + spacja i wpisz „Terminal”. Na Windowsie to PowerShell, dostępny w menu Start. Niczego nie zepsujesz, dopóki nie wpisujesz komend, których nie rozumiesz.</div></details>
+        <details class="trick"><summary>Co to jest folder projektu</summary><div class="d">Folder projektu to katalog z całą robotą, którą chcesz pokazać Claude. Claude widzi tylko ten folder, który mu otworzysz, i wszystko w środku. Nie ma dostępu do reszty dysku. Dlatego zawsze zaczynasz od przejścia do folderu z robotą.</div></details>
+        <details class="trick"><summary>Czy to bezpieczne</summary><div class="d">Zanim agent zmieni plik albo uruchomi komendę, pyta o zgodę. Zależy to od trybu uprawnień opisanego w sekcji o VS Code. Przez pierwsze dni pracuj na kopii folderu, nie na jedynym egzemplarzu.</div></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="instalacja" class="reveal">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">02 · instalacja</div>
+      <h2 class="sec-title">Instalacja krok po kroku</h2>
+      <p class="sec-intro">Jedna komenda wklejona do terminala. Instalator sam pobiera program i sam się aktualizuje w tle.</p>
+    </div>
+    <div class="blocks reveal">
+      <div class="block">
+        <div class="num">1</div>
+        <div>
+          <h4>Mac albo Linux</h4>
+          <p>Otwórz Terminal i wklej poniższe polecenie.</p>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · MAC</span><button class="term-copy" type="button" data-copy="curl -fsSL https://claude.ai/install.sh | bash">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> curl -fsSL https://claude.ai/install.sh | bash</div></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">2</div>
+        <div>
+          <h4>Windows</h4>
+          <p>Otwórz PowerShell, nie CMD. Poznasz go po tym, że linia zaczyna się od <span class="mono">PS C:\</span>. Wklej poniższe polecenie.</p>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">POWERSHELL · WINDOWS</span><button class="term-copy" type="button" data-copy="irm https://claude.ai/install.ps1 | iex">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> irm https://claude.ai/install.ps1 | iex</div></div>
+          <p class="ex">Na Windowsie warto doinstalować <a href="https://git-scm.com/downloads/win" target="_blank" rel="noopener">Git for Windows</a>, bo daje agentowi pełniejszy zestaw komend. Bez niego też zadziała.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">3</div>
+        <div>
+          <h4>Sprawdź, czy się udało</h4>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · SPRAWDZENIE</span><button class="term-copy" type="button" data-copy="claude --version&#10;claude doctor">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> claude --version</div><div class="term-line"><span class="a">wynik:</span> numer wersji, na przykład 2.1.211 (Claude Code)</div><div class="term-line"><span class="u">&gt;</span> claude doctor</div><div class="term-line"><span class="a">wynik:</span> diagnostyka instalacji i ustawień, gdy coś jest nie tak</div></div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">4</div>
+        <div>
+          <h4>Pierwsze uruchomienie i logowanie</h4>
+          <p>Przejdź do folderu z projektem i wpisz <span class="mono">claude</span>.</p>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · PIERWSZY START</span><button class="term-copy" type="button" data-copy="cd ~/projekty/moja-strona&#10;claude">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> cd ~/projekty/moja-strona</div><div class="term-line"><span class="u">&gt;</span> claude</div></div>
+          <p class="ex">Przy pierwszym uruchomieniu otworzy się przeglądarka z logowaniem do konta Claude. Potwierdzasz logowanie i wracasz do terminala.</p>
+        </div>
+      </div>
+    </div>
+    <div class="tricks reveal" style="grid-template-columns:1fr; margin-top:24px;">
+      <div class="tacc">
+        <details class="trick"><summary>Jak trafić do swojego folderu w terminalu</summary><div class="d">Komenda <span class="mono">cd</span> znaczy „przejdź do folderu”. Po niej podajesz ścieżkę.<br><br>Na Macu nie musisz jej przepisywać. Wpisz <span class="mono">cd</span>, zrób spację i przeciągnij folder z Findera prosto do okna terminala. Ścieżka wpisze się sama. Potem naciśnij Enter.<br><br>Na Windowsie kliknij folder prawym przyciskiem i wybierz kopiowanie ścieżki, potem wklej ją po <span class="mono">cd</span>.<br><br>Komenda <span class="mono">pwd</span> na Macu albo <span class="mono">cd</span> bez niczego na Windowsie pokazuje, gdzie właściwie jesteś.</div></details>
+      </div>
+    </div>
+    <div class="loop-back reveal"><span class="cyc">→</span><p><b>Nie chcesz używać terminala?</b> Możesz zacząć od aplikacji Claude Desktop na Maca i Windowsa, która daje to samo w oknie z przyciskami. Terminal przyda się później, gdy zechcesz pracować w kilku sesjach naraz.</p></div>
+  </div>
+</section>
+
+<section id="vscode" class="reveal">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">03 · VS Code</div>
+      <h2 class="sec-title">Claude Code w VS Code: wersja z oknem zamiast terminala</h2>
+      <p class="sec-intro">VS Code to darmowy edytor kodu od Microsoftu, dostępny na <a href="https://code.visualstudio.com/" target="_blank" rel="noopener">code.visualstudio.com</a>. Claude Code ma do niego oficjalne rozszerzenie, czyli dodatek instalowany wewnątrz edytora. To najwygodniejszy sposób pracy, bo widzisz rozmowę i pliki obok siebie, a zmiany dostajesz do zatwierdzenia jako porównanie przed i po.</p>
+    </div>
+    <div class="note reveal"><span class="m">wymagania</span><h4>Zanim otworzysz VS Code</h4><p>Potrzebujesz VS Code w wersji 1.94 lub nowszej i tego samego konta Claude co wyżej. Klucz API, czyli osobny kod dostępu do usług Anthropic, nie jest potrzebny.</p></div>
+    <div class="blocks reveal">
+      <div class="block"><div class="num">1</div><div><h4>Pobierz i zainstaluj VS Code</h4><p>Edytor jest darmowy. Pobierz go z <a href="https://code.visualstudio.com/" target="_blank" rel="noopener">code.visualstudio.com</a>. Strona sama rozpoznaje system i podpowiada właściwą wersję. Jeśli masz już VS Code, zacznij od kroku drugiego.</p><p><b>Mac</b>: po otwarciu pobranego pliku zobaczysz ikonę programu. Przeciągnij Visual Studio Code do folderu Programy i uruchom go stamtąd.</p><p><b>Windows</b>: wybierz wersję User Installer, bo nie wymaga uprawnień administratora. Uruchom plik .exe i przejdź przez instalator, który sam dopisze edytor do systemu.</p><p>Przy pierwszym uruchomieniu VS Code proponuje pakiet z polskimi nazwami przycisków. Zostaw angielskie, jeśli chcesz, żeby nazwy zgadzały się z tym poradnikiem.</p></div></div>
+      <div class="block"><div class="num">2</div><div><h4>Zainstaluj rozszerzenie</h4><p>W VS Code naciśnij Cmd + Shift + X na Macu albo Ctrl + Shift + X na Windowsie. Wpisz „Claude Code”, wybierz pozycję od wydawcy Anthropic i kliknij Install. Jeśli po instalacji nic się nie pojawia, zrestartuj VS Code.</p></div></div>
+      <div class="block"><div class="num">3</div><div><h4>Otwórz panel</h4><p>Panel to boczne okno, w którym rozmawiasz z agentem. W prawym górnym rogu edytora pojawia się ikona iskry Spark. Klikasz ją i po prawej otwiera się panel rozmowy. Ikona iskry jest też na lewym pasku, na liście sesji. Panel możesz przeciągnąć w dowolne miejsce okna.</p></div></div>
+      <div class="block"><div class="num">4</div><div><h4>Zaloguj się</h4><p>Przy pierwszym otwarciu panelu kliknij Sign in i potwierdź logowanie w przeglądarce. Potem pojawi się lista „Learn Claude Code” z zadaniami na rozgrzewkę.</p></div></div>
+      <div class="block"><div class="num">5</div><div><h4>Otwórz folder z robotą</h4><p>Wybierz File, potem Open Folder i wskaż katalog projektu. Katalog to inna nazwa folderu. Claude pracuje w tym, co jest otwarte w edytorze.</p></div></div>
+    </div>
+    <div class="tricks reveal" style="grid-template-columns:1fr; margin-top:24px;">
+      <div class="tacc">
+        <details class="trick"><summary>Tryby uprawnień, czyli ile agent może sam</summary><div class="d">Klikasz wskaźnik trybu pod polem tekstowym. Auto: klasyfikator sam przepuszcza większość działań, bez pytania o każde. Manual: agent pyta przed każdą zmianą pliku i przed większością komend. Plan: najpierw opisuje, co zamierza, czeka na akceptację, a plan otwiera się jako dokument, w którym możesz dopisać uwagi. Edit automatically: zmienia pliki bez pytania.</div></details>
+        <details class="trick"><summary>Pokazywanie plików agentowi</summary><div class="d">Wpisujesz <span class="mono">@</span> i kawałek nazwy pliku albo folderu, a reszta się podpowiada. Zaznaczony w edytorze fragment kodu agent widzi sam. Option + K na Macu albo Alt + K na Windowsie wstawia do polecenia odnośnik z numerami linii, na przykład <span class="mono">@app.ts#5-10</span>. Obrazek wklejasz do pola ze schowka.</div></details>
+        <details class="trick"><summary>Porównanie przed i po</summary><div class="d">W trybie Manual każda zmiana pliku pokazuje się jako zestawienie starej i nowej wersji obok siebie. Możesz ją przyjąć, odrzucić albo napisać, co zrobić inaczej.</div></details>
+        <details class="trick"><summary>Wracanie do starych rozmów</summary><div class="d">Użyj przycisku historii sesji na górze panelu. Sesje mają automatyczne tytuły. Możesz je przemianować i archiwizować, a nieużywane przez dwa tygodnie same trafiają do archiwum.</div></details>
+        <details class="trick"><summary>Drobiazgi, które oszczędzają nerwy</summary><div class="d">Shift + Enter robi nową linię bez wysyłania wiadomości. Pod polem widać, ile pamięci rozmowy zostało. Rozszerzenie działa też w edytorach zbudowanych na VS Code, na przykład Cursor.</div></details>
+      </div>
+    </div>
+    <div class="loop-back reveal"><span class="cyc">→</span><p><b>Rozszerzenie nosi własną kopię programu na potrzeby panelu.</b> Jeśli chcesz dodatkowo wpisywać <span class="mono">claude</span> w terminalu wbudowanym w VS Code, zostaw instalację z sekcji drugiej. Jedno drugiemu nie przeszkadza.</p></div>
+  </div>
+</section>
+
+<section id="pierwsza-sesja" class="reveal">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">04 · pierwsza sesja</div>
+      <h2 class="sec-title">Pierwsze dziesięć minut: co napisać na start</h2>
+      <p class="sec-intro">Program działa, konto podpięte, folder otwarty. Teraz najprostsza ścieżka, żeby zobaczyć, o co chodzi, bez ryzyka popsucia czegokolwiek.</p>
+    </div>
+    <div class="blocks reveal">
+      <div class="block"><div class="num">1</div><div><h4>Poproś o rozpoznanie terenu</h4><p>To niczego nie zmienia, a Ty sprawdzasz, czy agent widzi to, co powinien.</p><div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · ROZPOZNANIE</span><button class="term-copy" type="button" data-copy="opisz mi, co jest w tym folderze i do czego służy ten projekt">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> opisz mi, co jest w tym folderze i do czego służy ten projekt</div></div></div></div>
+      <div class="block"><div class="num">2</div><div><h4>Zbuduj pamięć projektu</h4><p>Agent przegląda projekt i zapisuje plik CLAUDE.md z notatkami, które czyta przy każdym następnym uruchomieniu. Raz zrobione, działa zawsze.</p><div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · PAMIĘĆ PROJEKTU</span><button class="term-copy" type="button" data-copy="/init">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> /init</div></div></div></div>
+      <div class="block"><div class="num">3</div><div><h4>Daj małe, konkretne zadanie</h4><p>Małe zadanie na start uczy więcej niż duże, bo widać cały przebieg.</p><div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · PIERWSZE ZADANIE</span><button class="term-copy" type="button" data-copy="popraw literówki w pliku oferta.md i pokaż mi, co zmieniłeś">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> popraw literówki w pliku oferta.md i pokaż mi, co zmieniłeś</div></div></div></div>
+      <div class="block"><div class="num">4</div><div><h4>Zamknij i wróć później</h4><p><span class="mono">/clear</span> czyści rozmowę bez zamykania programu, a <span class="mono">claude --continue</span> wraca do ostatniej sesji w tym folderze.</p><div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · POWRÓT DO PRACY</span><button class="term-copy" type="button" data-copy="/clear&#10;claude --continue">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> /clear</div><div class="term-line"><span class="u">&gt;</span> claude --continue</div></div></div></div>
+    </div>
+    <div class="loop-back reveal"><span class="cyc">→</span><p><b>Co napisać, gdy agent idzie w złą stronę?</b> Przejdź do sekcji <a href="#wtracanie">o wtrącaniu się w trakcie pracy</a> oraz do sekcji <a href="#prompt">o pisaniu poleceń</a>. Obie są dalej na tej stronie.</p></div>
+  </div>
+</section>
+
+<section id="przyklady" class="reveal">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">05 · przykłady</div>
+      <h2 class="sec-title">Proste zadania na start: pięć rzeczy, które możesz zlecić w pierwszym tygodniu</h2>
+      <p class="sec-intro">Te przykłady są dla osoby, która nie pisze kodu. Każde zadanie dotyczy plików, które i tak masz na dysku. Zacznij na kopii folderu, żeby spokojnie sprawdzić, jak agent pracuje.</p>
+    </div>
+    <div class="blocks reveal">
+      <div class="block">
+        <div class="num">1</div>
+        <div>
+          <h4>Uporządkuj nazwy zdjęć</h4>
+          <p>Przydaje się po sesji zdjęciowej, gdy pliki mają nazwy nadane przez aparat.</p>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · PORZĄDKI W PLIKACH</span><button class="term-copy" type="button" data-copy="zmień nazwy zdjęć w folderze zdjecia na opisowe, dodaj rok, użyj polskich słów bez ogonków, oddziel słowa myślnikami i zachowaj kolejność plików">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> zmień nazwy zdjęć w folderze zdjecia na opisowe, dodaj rok, użyj polskich słów bez ogonków, oddziel słowa myślnikami i zachowaj kolejność plików</div></div>
+          <p>Dostajesz nazwy, które da się rozpoznać po wydarzeniu i roku, a ich treść rozumie Google.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">2</div>
+        <div>
+          <h4>Policz wyniki w tabeli</h4>
+          <p>Przydaje się, gdy raport zawiera wiele wierszy z wynikami z kolejnych dni.</p>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · LICZENIE W TABELI</span><button class="term-copy" type="button" data-copy="w pliku raport.csv policz sumę kliknięć dla każdego miesiąca i zapisz wynik do pliku podsumowanie.csv">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> w pliku raport.csv policz sumę kliknięć dla każdego miesiąca i zapisz wynik do pliku podsumowanie.csv</div></div>
+          <p>Dostajesz gotową tabelę bez ręcznego klikania w arkuszu.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">3</div>
+        <div>
+          <h4>Wyciągnij konkrety z dokumentu</h4>
+          <p>Przydaje się przed rozpoczęciem pracy nad długim briefem od klienta.</p>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · KONKRETY Z BRIEFU</span><button class="term-copy" type="button" data-copy="przeczytaj plik brief-klienta.pdf i wypisz w punktach, o co klient prosi i czego zabrania">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> przeczytaj plik brief-klienta.pdf i wypisz w punktach, o co klient prosi i czego zabrania</div></div>
+          <p>Dostajesz listę zadań zamiast dwudziestu stron do przeczytania.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">4</div>
+        <div>
+          <h4>Zbierz zadania z notatek</h4>
+          <p>Przydaje się, gdy ustalenia z kilku spotkań leżą w osobnych plikach.</p>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · LISTA Z NOTATEK</span><button class="term-copy" type="button" data-copy="przejrzyj wszystkie pliki w folderze notatki i zbierz z nich jedną listę rzeczy do zrobienia, z nazwą pliku przy każdej pozycji">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> przejrzyj wszystkie pliki w folderze notatki i zbierz z nich jedną listę rzeczy do zrobienia, z nazwą pliku przy każdej pozycji</div></div>
+          <p>Dostajesz jedno miejsce do pracy zamiast dwudziestu plików.</p>
+        </div>
+      </div>
+      <div class="block">
+        <div class="num">5</div>
+        <div>
+          <h4>Zrób prostą stronę z cennikiem</h4>
+          <p>Przydaje się, gdy chcesz szybko pokazać dane z pliku w czytelnej formie.</p>
+          <div class="term term-sm"><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">TERMINAL · STRONA Z CENNIKIEM</span><button class="term-copy" type="button" data-copy="zrób z pliku cennik.md jedną stronę HTML z tabelą i otwórz ją w przeglądarce, żebym zobaczył wynik">Kopiuj</button></div><div class="term-line"><span class="u">&gt;</span> zrób z pliku cennik.md jedną stronę HTML z tabelą i otwórz ją w przeglądarce, żebym zobaczył wynik</div></div>
+          <p>Dostajesz widoczny rezultat po kilku minutach, bez znajomości HTML.</p>
+        </div>
+      </div>
+    </div>
+    <div class="terms reveal">
+      <div class="term-card"><span class="m">polecenie za ogólne</span><br><b>„ogarnij mi te pliki”</b><p>Agent zgaduje, co znaczy „ogarnij”, i robi coś innego, niż masz na myśli.</p></div>
+      <div class="term-card"><span class="m">polecenie konkretne</span><br><b>„W folderze materiały zmień nazwy plików na opisowe i nie zmieniaj ich treści. Zadanie jest gotowe, gdy każda nazwa zawiera temat i rok.”</b><p>Podajesz co zrobić, gdzie pracować i po czym poznać koniec. Warunek końca zamienia życzenie w zadanie.</p></div>
+    </div>
+    <div class="loop-back reveal"><span class="cyc">→</span><p><b>Pełne nawyki pisania poleceń znajdziesz dalej w sekcji <a href="#prompt">o promptowaniu</a>.</b> Tutaj chodzi tylko o pierwsze wejście i zobaczenie wyniku na własnych plikach.</p></div>
+  </div>
+</section>
+
+<section id="klopoty" class="reveal">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-no">06 · pomoc</div>
+      <h2 class="sec-title">Coś nie działa: pięć typowych potknięć</h2>
+    </div>
+    <div class="terms reveal">
+      <div class="term-card"><span class="m">command not found: claude</span><br><b>Terminal nie zna jeszcze nowej komendy</b><p>Zamknij okno terminala i otwórz nowe, bo komenda dopisuje się przy starcie. Jeśli dalej nie działa, uruchom instalację jeszcze raz i sprawdź <span class="mono">claude doctor</span>.</p></div>
+      <div class="term-card"><span class="m">logowanie nie przechodzi</span><br><b>Darmowy plan albo złe konto</b><p>Claude Code wymaga planu Pro, Max, Team, Enterprise albo konta Console. Sprawdź, na które konto zalogowała się przeglądarka, bo wybiera to zalogowane jako pierwsze.</p></div>
+      <div class="term-card"><span class="m">panel w VS Code pusty</span><br><b>Rozszerzenie wystartowało przed instalacją</b><p>Otwórz Command Palette przez Cmd + Shift + P albo Ctrl + Shift + P i wybierz komendę „Developer: Reload Window”. Jeśli to nie pomaga, zrestartuj cały edytor.</p></div>
+      <div class="term-card"><span class="m">agent nie widzi pliku</span><br><b>Plik leży poza otwartym folderem</b><p>Claude sięga tylko do folderu, który mu otworzyłeś. Otwórz folder wyżej albo skopiuj plik do środka.</p></div>
+      <div class="term-card"><span class="m">agent poszedł w złą stronę</span><br><b>Polecenie było za ogólne albo brakowało warunku końca</b><p>Escape zatrzymuje pracę natychmiast, a to, co agent zrobił do tej pory, zostaje. Dopisz, co ma być gotowe i czego ma nie ruszać, potem uruchom zadanie jeszcze raz.</p></div>
+    </div>
+    <div class="note reveal"><span class="m">pełna dokumentacja</span><h4>Wszystkie komendy i ustawienia</h4><p>Pełną listę komend i ustawień znajdziesz w <a href="https://code.claude.com/docs" target="_blank" rel="noopener">oficjalnej dokumentacji Claude Code</a>. Materiał jest po angielsku.</p></div>
+  </div>
+</section>
+
 <section id="poziomy">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">01 · mapa</div>
+      <div class="sec-no">07 · mapa</div>
       <h2 class="sec-title">Pięć poziomów korzystania z Claude: od zwykłych pytań po własnych agentów</h2>
       <p class="sec-intro">Z Claude można korzystać na pięć sposobów, od najprostszego (zadajesz pytanie, dostajesz odpowiedź) po najbardziej zaawansowany (budujesz własnych agentów, którzy pracują za Ciebie). Ta mapa pokazuje całą drogę i gdzie na niej jesteśmy. Kliknij poziom, żeby zobaczyć, co się na nim dzieje.</p>
     </div>
@@ -306,7 +517,7 @@
 <section id="tricki">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">02 · fundament roboczy</div>
+      <div class="sec-no">08 · fundament roboczy</div>
       <h2 class="sec-title">Wskazówki do codziennej pracy z Claude Code</h2>
       <p class="sec-intro">Zestaw sprawdzonych nawyków, poukładany od rzeczy najprostszych po te dla zaawansowanych. Dwie zasady wracają w każdej z nich: pilnuj kontekstu i wymuszaj jakość. Kliknij wskazówkę, żeby ją rozwinąć.</p>
     </div>
@@ -365,7 +576,7 @@
 <section id="wtracanie">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">03 · praca w trakcie</div>
+      <div class="sec-no">09 · praca w trakcie</div>
       <h2 class="sec-title">Wtrącaj się, kiedy agent pracuje</h2>
       <p class="sec-intro">Agent pracuje kilka minut sam. Nie musisz czekać do końca, żeby coś dopowiedzieć. Piszesz w trakcie, a wiadomość wpada między jego krokami.</p>
     </div>
@@ -388,7 +599,7 @@
 <section id="funkcje">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">04 · funkcje</div>
+      <div class="sec-no">10 · funkcje</div>
       <h2 class="sec-title">Dwanaście funkcji Claude Code, które oszczędzają najwięcej pracy</h2>
       <p class="sec-intro">To nie są najciekawsze funkcje techniczne, tylko te, które najbardziej zmieniają codzienną pracę. Kliknij funkcję, żeby zobaczyć, co robi.</p>
     </div>
@@ -419,7 +630,7 @@
 <section id="agent">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">05 · fundament pojęcia</div>
+      <div class="sec-no">11 · fundament pojęcia</div>
       <h2 class="sec-title">Czym agent różni się od skryptu i chatbota</h2>
       <p class="sec-intro">Claude Code ma sens, bo nie jest tylko czatem. Agent dostaje cel, sam dobiera narzędzia, sprawdza wynik i poprawia pracę. Zwykły czat odpowiada. Agent działa.</p>
     </div>
@@ -434,7 +645,7 @@
 <section id="petla">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">06 · pętla</div>
+      <div class="sec-no">12 · pętla</div>
       <h2 class="sec-title">Pętla: jak agent sam powtarza pracę, aż zrobi ją do końca</h2>
       <p class="sec-intro">Każdy rysuje pętlę agenta inaczej, ale pod spodem zawsze jest to samo. Agent dostaje cel, sam myśli, co zrobić, robi to jakimś narzędziem, patrzy na wynik i pyta sam siebie: już gotowe? Jak nie, kręci kolejne kółko. Jak tak, kończy. Ty nie stoisz nad nim po każdym kroku. Najmocniejsza wersja tej pętli to komenda <code>/goal</code>, którą rozkładamy niżej.</p>
     </div>
@@ -551,7 +762,7 @@
 <section id="nadzor">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">07 · nadzór</div>
+      <div class="sec-no">13 · nadzór</div>
       <h2 class="sec-title">Agent pilnuje agenta</h2>
       <p class="sec-intro">W <code>/goal</code> jedna rola robi, a druga sprawdza każdy etap. Ten sam pomysł działa też w większej skali: osobny agent, który regularnie kontroluje pracę drugiego.</p>
     </div>
@@ -634,7 +845,7 @@
 <section id="czesci">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">08 · anatomia</div>
+      <div class="sec-no">14 · anatomia</div>
       <h2 class="sec-title">Pięć części, z których zbudowany jest każdy agent</h2>
       <p class="sec-intro">Każdy agent to te same pięć części, tylko z inną treścią. Poznasz jeden, umiesz wszystkie.</p>
     </div>
@@ -651,7 +862,7 @@
 <section id="sdk">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">09 · po co nam SDK</div>
+      <div class="sec-no">15 · po co nam SDK</div>
       <h2 class="sec-title">Agent SDK: co to jest i jak zmienia pracę agenta</h2>
       <p class="sec-intro">Agent SDK to zestaw narzędzi dla programistów, którym budujesz własnego agenta na silniku Claude. Nie robi Claude mądrzejszym. Bierze tę samą pętlę, którą ma Claude Code, i zamyka ją w programie: taki agent działa sam o wyznaczonej porze, ma dostęp tylko do narzędzi, które mu dasz, a wynik trafia tam, gdzie chcesz (Slack, plik, kolejne narzędzie).</p>
     </div>
@@ -676,7 +887,7 @@
 <section id="mcp">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">10 · co dopięliśmy dzisiaj</div>
+      <div class="sec-no">16 · co dopięliśmy dzisiaj</div>
       <h2 class="sec-title">MCP: gotowe narzędzia, które podpinasz do agenta</h2>
       <p class="sec-intro">MCP (Model Context Protocol) to sposób, żeby podłączyć do Claude zewnętrzne narzędzie albo dane, z których od razu zacznie korzystać. Traktuj to jak wtyczki: dokładasz tylko te, których potrzebujesz. Oto, co podpięliśmy przy dzisiejszej robocie:</p>
     </div>
@@ -693,7 +904,7 @@
 <section id="skille">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">11 · jak robimy ładnie</div>
+      <div class="sec-no">17 · jak robimy ładnie</div>
       <h2 class="sec-title">Skille do web devu: żeby strony wyglądały dobrze, a kod się trzymał</h2>
       <p class="sec-intro">Skill to gotowy zestaw zasad, który Claude wczytuje i stosuje za każdym razem tak samo. Kilka mamy włączonych na stałe przy każdej stronie. To one pilnują, żeby efekt nie wyglądał jak zrobiony na szybko przez AI.</p>
     </div>
@@ -711,7 +922,7 @@
 <section id="predkosc">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">12 · prędkość</div>
+      <div class="sec-no">18 · prędkość</div>
       <h2 class="sec-title">Jak agent sprawdza prędkość strony</h2>
       <p class="sec-intro">Osobna warstwa odbioru: nie „czy ładnie wygląda”, tylko „czy szybko się ładuje i czy Google nie będzie marudził”. Napędza ją chrome-devtools MCP razem z Lighthouse.</p>
     </div>
@@ -736,7 +947,7 @@
 <section id="nasze">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">13 · u nas w robocie</div>
+      <div class="sec-no">19 · u nas w robocie</div>
       <h2 class="sec-title">Trzy agenty, które już u nas działają</h2>
       <p class="sec-intro">Te same pięć klocków, trzy różne zadania. Wszystkie działają na Agent SDK.</p>
     </div>
@@ -787,7 +998,7 @@
 <section id="prompt">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">14 · jak promptować</div>
+      <div class="sec-no">20 · jak promptować</div>
       <h2 class="sec-title">Jak pisać polecenia, żeby dostać lepsze wyniki: 6 nawyków</h2>
       <p class="sec-intro">Im nowszy model, tym bardziej przeszkadza mu stary styl: piętrzenie reguł i „myśl krok po kroku”. Sześć nawyków, każdy to jedno zdanie do wklejenia. Pięć działa na każdym modelu, jeden dotyczy najnowszych. Kliknij, żeby rozwinąć.</p>
     </div>
@@ -816,7 +1027,7 @@
 <section id="wideo">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">15 · materiały</div>
+      <div class="sec-no">21 · materiały</div>
       <h2 class="sec-title">Chcesz więcej? Materiały wideo</h2>
       <p class="sec-intro">Pięć materiałów do nauki Claude Code i pracy z agentami. Po polsku na start, po angielsku gdy chcesz zobaczyć dłuższy proces i pracę równoległą.</p>
     </div>
@@ -833,7 +1044,7 @@
 <section id="mem">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="sec-no">16 · na luzie</div>
+      <div class="sec-no">22 · na luzie</div>
       <h2 class="sec-title">Agent zrobi robotę, ale nie wymyśli jej za ciebie</h2>
       <p class="sec-intro">Cel i pomysł nadal przynosisz ty. „Zrób ze mnie milionera, zrób appkę, tylko prościej” nie zadziała, choćby agent był najlepszy.</p>
     </div>
@@ -848,5 +1059,47 @@
   </div>
 </footer>
 
+<script>
+  document.addEventListener("click", function(event){
+    const btn = event.target.closest(".term-copy");
+    if(!btn) return;
+
+    const showCopied = function(){
+      btn.textContent = "Skopiowano";
+      window.setTimeout(function(){ btn.textContent = "Kopiuj"; }, 2000);
+    };
+
+    const selectCommand = function(){
+      const oldSource = document.querySelector("[data-copy-fallback]");
+      if(oldSource) oldSource.remove();
+
+      const source = document.createElement("pre");
+      source.setAttribute("data-copy-fallback", "");
+      source.textContent = btn.dataset.copy;
+      source.style.cssText = "position:fixed;left:0;bottom:0;width:1px;height:1px;overflow:hidden;opacity:.01;pointer-events:none;white-space:pre";
+      document.body.appendChild(source);
+
+      const selection = window.getSelection();
+      if(selection){
+        const range = document.createRange();
+        range.selectNodeContents(source);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      btn.textContent = "Zaznacz i skopiuj";
+      window.setTimeout(function(){ btn.textContent = "Kopiuj"; }, 2000);
+    };
+
+    let copyPromise;
+    try{
+      copyPromise = navigator.clipboard
+        ? navigator.clipboard.writeText(btn.dataset.copy)
+        : Promise.reject(new Error("Schowek jest niedostępny"));
+    }catch(error){
+      copyPromise = Promise.reject(error);
+    }
+    copyPromise.then(showCopied).catch(selectCommand);
+  });
+</script>
 </body>
 </html>
